@@ -20,7 +20,7 @@ feature  -- creation
 
 	make
 		do
-			run_test_2
+			run_test_4
 		end
 
 	run_test_0
@@ -166,6 +166,39 @@ feature  -- creation
 
 			-- Render table
 			{FLAT_RENDERER}.render (block, dimension_indices, 1)
+
+		end
+
+	run_test_4
+			-- Uses 2-dimensional data structure using ARRA2[STRING]
+		local
+			table: ARRAY2[STRING]                  -- Data source 2D-table
+			row: ARRAY[STRING]                     -- One row of data
+			dimension_indices: ARRAY[INTEGER]      -- Work vector with dimension indices
+			rows_count: INTEGER                    -- Number of rows in table
+			columns_count: INTEGER                 -- Number of columns in table
+		do
+			-- Set table dimensions
+			rows_count := 3
+			columns_count := 4
+
+			-- Create and fill table
+			-- Start
+			create row.make_filled ("", 1, columns_count)
+			create table.make_filled ("", rows_count, columns_count)
+
+			table.item(1,1) := "Orange";     table.item(1,2) := "Banana"; table.item(1,3) := "Apple"; table.item(1,4) := "Melom"
+			table.item(2,1) := "Eiffel";     table.item(2,2) := "Java";   table.item(2,3) := "C++";   table.item(2,4) := "C#"
+			table.item(3,1) := "Stepanov";   table.item(3,2) := "Wirth";  table.item(3,3) := "B. Meyer"; table.item(3,4) := "Stroustrup"
+
+			-- End - Create and fill table
+
+			-- Initialize work dimension indices
+			create dimension_indices.make_empty
+			dimension_indices.force (1, 1)
+
+			-- Render table
+			{FLAT_RENDERER}.render (table, dimension_indices, 1)
 
 		end
 
