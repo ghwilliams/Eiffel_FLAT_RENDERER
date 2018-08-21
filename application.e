@@ -20,7 +20,7 @@ feature  -- creation
 
 	make
 		do
-			run_test_4
+			run_test_3
 		end
 
 	run_test_0
@@ -169,7 +169,7 @@ feature  -- creation
 
 		end
 
-	run_test_4
+	run_test_3
 			-- Uses 2-dimensional data structure using ARRA2[STRING]
 		local
 			table: ARRAY2[STRING]                  -- Data source 2D-table
