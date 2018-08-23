@@ -34,14 +34,19 @@ printed also a counter indicating the current sequence number in that dimension.
 ## Examples
 
 For a data structure defined as<br>
+```
     table: ARRAY[ARRAY[STRING]]<br>
+```
 and initialized as<br>
-	table[1].item(1) := "Orange";     table[1].item(2) := "Banana"; table[1].item(3) := "Apple"; table[1].item(4) := "Melom"<br>
-  table[2].item(1) := "Eiffel";     table[2].item(2) := "Java";   table[2].item(3) := "C++";   table[2].item(4) := "C#"<br>
-  table[3].item(1) := "Stepanov";   table[3].item(2) := "Wirth";  table[3].item(3) := "B. Meyer"; table[3].item(4) := "Stroustrup"<br>
+```
+table[1].item(1) := "Orange";     table[1].item(2) := "Banana"; table[1].item(3) := "Apple"; table[1].item(4) := "Melom"<br>
+table[2].item(1) := "Eiffel";     table[2].item(2) := "Java";   table[2].item(3) := "C++";   table[2].item(4) := "C#"<br>
+table[3].item(1) := "Stepanov";   table[3].item(2) := "Wirth";  table[3].item(3) := "B. Meyer"; table[3].item(4) := "Stroustrup"<br>
+```
   
 The output is:<br>
 
+```
 1 1 Orange<br>
 1 2 Banana<br>
 1 3 Apple<br>
@@ -54,6 +59,7 @@ The output is:<br>
 3 2 Wirth<br>
 3 3 B. Meyer<br>
 3 4 Stroustrup<br>
+```
 
 ## Aknowledgement
  All friends from Eiffel Users forum
