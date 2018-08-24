@@ -61,6 +61,6 @@ The output is:<br>
 3 4 Stroustrup
 ```
 
-## Aknowledgement
+## Aknowledgements
  All friends from Eiffel Users forum
  
