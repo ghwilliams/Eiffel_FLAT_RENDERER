@@ -27,7 +27,7 @@ class
 
 feature {ANY} -- exported dump procedures
 
-	dump_01(a_data_structure: READABLE_INDEXABLE[ANY])
+	dump_01 (a_data_structure: READABLE_INDEXABLE[ANY])
 		note
 			arguments: "[
 						a_data_structure  Data sctructure to be dumped
