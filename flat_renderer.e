@@ -97,18 +97,30 @@ feature {NONE} -- Private auxiliary routines
 				 	2 3 f
 				 In the above output each column (except the last, wich contains the data itself)
 				 is associated with one dimensions of the data.
-				 ]"		
+				 ]"
+		local
+			keys: ARRAY[STRING]
+			k: INTEGER
 		do
 			-- Processing of basic data types
 			--    STRING, INTEGER, REAL, and DOUBLE
 			-- Start			
 			if attached {STRING} a_child.item (a_child.lower)
 				or attached {NUMERIC} a_child.item (a_child.lower) then
-				across a_child.lower |..| a_child.upper as i loop
-					across 1 |..| (dimensions.count-1) as  ic loop
-						io.put_string (dimensions[ic.item].out + " ")
+				if attached {HASH_TABLE[ANY,STRING]} a_child as al_ht then
+					keys := al_ht.current_keys
+				end
+
+				from k:= a_child.lower until k > a_child.upper loop
+					across 1 |..| (dimensions.count-1) as  al_ic loop
+						io.put_string (dimensions[al_ic.item].out + " ")
 					end
-					io.put_string ( i.item.out + " " + a_child.item (i.item).out + " ") io.put_new_line
+					if keys /= Void then
+						io.put_string ( keys[k+1] + " " + a_child.item (k).out + " ") io.put_new_line
+					else
+						io.put_string ( k.out + " " +  a_child.item (k).out + " ") io.put_new_line
+					end
+					k := k + 1
 				end
 			-- End - Processing of basic data types
 			elseif attached {READABLE_INDEXABLE[ANY]} a_child as al_child then

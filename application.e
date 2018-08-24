@@ -21,7 +21,7 @@ feature  -- creation
 	make
 		do
 			-- Select a test to execute
-			run_test_4
+			run_test_5
 		end
 
 	run_test_0
@@ -226,6 +226,39 @@ feature  -- creation
 
 			-- Render table
 			{FLAT_RENDERER}.dump_01 (block)
+
+		end
+
+	run_test_5
+			-- First test using a 2-dimensional data structure using HASH_TABLE
+		local
+			table: ARRAY[HASH_TABLE[INTEGER, STRING]]  -- Data source 2D-table
+			row: HASH_TABLE[INTEGER, STRING]           -- One row of data			
+			rows_count: INTEGER                       -- Number of rows in table
+			columns_count: INTEGER                    -- Number of columns in table
+		do
+			-- Set table dimensions
+			rows_count := 2
+			columns_count := 4
+
+			-- Create and fill table
+			-- Start
+			create row.make (columns_count)
+			create table.make_filled (row, 1, rows_count)
+
+			across 1 |..| rows_count as ic loop
+				create row.make (columns_count)
+				table.put (row, ic.item)
+			end
+
+			table[1].put(400,"Zurich"); table[1].put(198,"Geneva"); table[1].put(176,"Basel"); table[1].put(146,"Lausanne")
+			table[2].put(1894,"Balzer"); table[2].put(1893,"Duryea Car"); table[2].put(1889,"Daimler-Maybach Stahlradwagen");
+			table[2].put(1884,"La Marquise")
+
+			-- End - Create and fill table
+
+			-- Render table
+			{FLAT_RENDERER}.dump_01 (table)
 
 		end
 
