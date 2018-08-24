@@ -35,30 +35,25 @@ printed also a counter indicating the current sequence number in that dimension.
 
 For a data structure defined as<br>
 ```
-    table: ARRAY[ARRAY[STRING]]
+    table: ARRAY[HASH_TABLE[INTEGER, STRING]]
 ```
 and initialized as<br>
 ```
-table[1].item(1) := "Orange";     table[1].item(2) := "Banana"; table[1].item(3) := "Apple"; table[1].item(4) := "Melom"
-table[2].item(1) := "Eiffel";     table[2].item(2) := "Java";   table[2].item(3) := "C++";   table[2].item(4) := "C#"
-table[3].item(1) := "Stepanov";   table[3].item(2) := "Wirth";  table[3].item(3) := "B. Meyer"; table[3].item(4) := "Stroustrup"
+table[1].put(400,"Zurich"); table[1].put(198,"Geneva"); table[1].put(176,"Basel"); table[1].put(146,"Lausanne")
+table[2].put(1894,"Balzer"); table[2].put(1893,"Duryea Car"); table[2].put(1889,"Daimler-Maybach Stahlradwagen");table[2].put(1884,"La Marquise")
 ```
   
 The output is:<br>
 
 ```
-1 1 Orange
-1 2 Banana
-1 3 Apple
-1 4 Melom
-2 1 Eiffel
-2 2 Java
-2 3 C++
-2 4 C#
-3 1 Stepanov
-3 2 Wirth
-3 3 B. Meyer
-3 4 Stroustrup
+1 Zurich 400
+1 Geneva 198
+1 Basel 176
+1 Lausanne 146
+2 Balzer 1894
+2 Duryea Car 1893
+2 Daimler-Maybach Stahlradwagen 1889
+2 La Marquise 1884
 ```
 
 ## Aknowledgements
