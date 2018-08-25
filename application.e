@@ -21,7 +21,7 @@ feature  -- creation
 	make
 		do
 			-- Select a test to execute
-			run_test_5
+			run_test_6
 		end
 
 	run_test_0
@@ -204,6 +204,7 @@ feature  -- creation
 			create page.make
 			create block.make_filled (page, 1, pages_count)
 
+
 			across 1 |..| pages_count as ipage loop
 				create page.make
 				across 1 |..| rows_count as irow loop
@@ -254,6 +255,37 @@ feature  -- creation
 			table[1].put(400,"Zurich"); table[1].put(198,"Geneva"); table[1].put(176,"Basel"); table[1].put(146,"Lausanne")
 			table[2].put(1894,"Balzer"); table[2].put(1893,"Duryea Car"); table[2].put(1889,"Daimler-Maybach Stahlradwagen");
 			table[2].put(1884,"La Marquise")
+
+			-- End - Create and fill table
+
+			-- Render table
+			{FLAT_RENDERER}.dump_01 (table)
+
+		end
+
+	run_test_6
+			-- First test using a 2-dimensional data structure using TUPLE
+		local
+			table: ARRAY[TUPLE[STRING, INTEGER, DOUBLE]]  -- Data source 2D-table
+			row: TUPLE[STRING, INTEGER, DOUBLE]    -- One row of data			
+			rows_count: INTEGER                    -- Number of rows in table			
+		do
+			-- Set table dimensions
+			rows_count := 3
+
+			-- Create and fill table
+			-- Start
+			create row.default_create
+			create table.make_filled (row, 1, rows_count)
+
+			across 1 |..| rows_count as ic loop
+				create row.default_create
+				table.put (row, ic.item)
+			end
+
+			table[1] := ["Cheeseburger", 2, 8.50]
+			table[2] := ["Milkshake", 2, 7.30]
+			table[3] := ["Coca-cola", 1, 3.20]
 
 			-- End - Create and fill table
 

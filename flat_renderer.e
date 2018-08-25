@@ -27,7 +27,7 @@ class
 
 feature {ANY} -- exported dump procedures
 
-	dump_01 (a_data_structure: READABLE_INDEXABLE[ANY])
+	dump_01 (a_data_structure: ANY)
 		note
 			arguments: "[
 						a_data_structure  Data sctructure to be dumped
@@ -37,33 +37,28 @@ feature {ANY} -- exported dump procedures
 			         ]"
 
 		local
-			dimensions: ARRAY[INTEGER]     -- This vector stores a counter for each dimension		
-										   -- used by routine render_01
-			start_dimension: INTEGER       --
 
-										   -- used by routine render_01		
 		do
-			-- Initialize auxiliary work variables
-			start_dimension := 1            -- We start at the top level (first dimension)
-			create dimensions.make_empty
-			dimensions.force (1, 1)
-
-			render_01 (a_data_structure, dimensions, Start_dimension)
+			if attached {READABLE_INDEXABLE[ANY]} a_data_structure as al_ri then
+				dump_readable_indexable (al_ri, "")
+			elseif attached {TUPLE} a_data_structure as al_tp then
+				dump_tuple (al_tp, "")
+			end
 		ensure
 			class
 		end
 
 feature {NONE} -- Private auxiliary routines
 
-	render_01 (a_child: READABLE_INDEXABLE[ANY]; dimensions: ARRAY[INTEGER]; current_dimension: INTEGER)
+	dump_readable_indexable (a_child: READABLE_INDEXABLE[ANY]; a_str: STRING)
 		note
 			arguments: "[
 				a_child			  Data sctructure to be dumped
-				dimensions  	  Work vector containing a counter for each dimension
-				current_dimension The current dimension being processed
+				a_str             Work string containing a counter for each dimension
 				]"
 			purpose: "[
 				To print to the console all the elements in the supplied data structure 'a_child'.
+				This version specialized for READABLE_INDEXABLE class.
 			]"
 			how: "[
 				By depth-first traversing the data structure and printing its elements one per line.
@@ -101,46 +96,97 @@ feature {NONE} -- Private auxiliary routines
 		local
 			keys: ARRAY[STRING]
 			k: INTEGER
+			l_str: STRING
 		do
-			-- Processing of basic data types
-			--    STRING, INTEGER, REAL, and DOUBLE
-			-- Start			
-			if attached {STRING} a_child.item (a_child.lower)
-				or attached {NUMERIC} a_child.item (a_child.lower) then
-				if attached {HASH_TABLE[ANY,STRING]} a_child as al_ht then
-					keys := al_ht.current_keys
+			if attached {HASH_TABLE[ANY,STRING]} a_child as al_ht then
+				keys := al_ht.current_keys
+			end
+			from k:= a_child.lower until k > a_child.upper loop
+				if keys /= Void then
+					l_str := a_str + " " + keys[k+1]
+				else
+					l_str := a_str + " " + k.out
 				end
 
-				from k:= a_child.lower until k > a_child.upper loop
-					across 1 |..| (dimensions.count-1) as  al_ic loop
-						io.put_string (dimensions[al_ic.item].out + " ")
-					end
-					if keys /= Void then
-						io.put_string ( keys[k+1] + " " + a_child.item (k).out + " ") io.put_new_line
-					else
-						io.put_string ( k.out + " " +  a_child.item (k).out + " ") io.put_new_line
-					end
-					k := k + 1
+				if attached {STRING} a_child.item (k) as al_str then
+					io.put_string (l_str + " ")
+					io.put_string (al_str + " ") io.put_new_line
+				elseif attached {NUMERIC} a_child.item (k) as al_num then
+					io.put_string (l_str + " ")
+					io.put_string (al_num.out + " ") io.put_new_line
+				elseif attached {READABLE_INDEXABLE[ANY]} a_child.item (k) as al_ri then
+					dump_readable_indexable (al_ri, l_str)
+				elseif attached {TUPLE} a_child.item (k) as al_tuple then
+					dump_tuple (al_tuple, l_str)
 				end
-			-- End - Processing of basic data types
-			elseif attached {READABLE_INDEXABLE[ANY]} a_child as al_child then
-				-- Recursive traversal of the data sctructure
-				-- Start
-				across a_child.lower |..| a_child.upper as i loop
-					if attached {READABLE_INDEXABLE[ANY]} a_child.item (i.item) as al_child_item then
-						dimensions.force (1, current_dimension+1)
-						render_01 (al_child_item, dimensions, current_dimension+1)
-					end
-					dimensions[current_dimension] := dimensions[current_dimension] + 1
+				k := k + 1
+			end
+		ensure
+			class
+
+		end
+
+	dump_tuple (a_child: TUPLE; a_str: STRING)
+		note
+			arguments: "[
+					a_child			  Data sctructure to be dumped
+					a_str             Work string containing a counter for each dimension
+					]"
+				purpose: "[
+					To print to the console all the elements in the supplied data structure 'a_child'.
+					This version specialized for TUPLE class.
+				]"
+				how: "[
+					By depth-first traversing the data structure and printing its elements one per line.
+					The tricky part is to save a count for each dimension such that
+					the indices for each printed dimension can be shown properly
+					-- What is definition of dimension in this routine?
+					--   Dimension is defined by the number of nested structures
+					--   composing 'a_data_structure.
+					-- For example:
+					--  a - v: ARRAY[LINKED_LIST[STRING]]
+					--      In this case v is considered as two-dimensional
+					--  b - ARRAY2[STRING]
+					--      This is a one-dimensional data structure - ARRAY2 stores its elements
+					--      in a single linear array. So although ARRAY2 is used to represent
+					--      real world two-dimensional structures, this routine sees it as
+					--      one-dimensional.
+					]"
+				example: "[
+					For a 2D data structure we can visualize it as
+					    a b c                1,1   1,2   1,3
+					    d e f   => indices   2,1   2,2   2,3				    
+					 if it was defined as ARRAY[ARRAY[G]] the most internal data is printed first.
+					 In the example above lines are printed first.
+					 
+					 The output from this routine for the example above will be
+					 	1 1 a
+					 	1 2 b
+					 	1 3 c
+					 	2 1 d
+					 	2 2 e
+					 	2 3 f
+					 In the above output each column (except the last, wich contains the data itself)
+					 is associated with one dimensions of the data.
+					 ]"
+		local
+			k: INTEGER
+			l_str: STRING
+		do
+			from k:= a_child.lower until k > a_child.upper loop
+				l_str := a_str + " " + k.out
+				if attached {STRING} a_child.item (k) as al_str then
+					io.put_string (l_str + " ")
+					io.put_string (al_str + " ") io.put_new_line
+				elseif attached {NUMERIC} a_child.item (k) as al_num then
+					io.put_string (l_str + " ")
+					io.put_string (al_num.out + " ") io.put_new_line
+				elseif attached {READABLE_INDEXABLE[ANY]} a_child as al_ri then
+					dump_readable_indexable (al_ri, l_str)
+				elseif attached {TUPLE} a_child.item (k) as al_tuple then
+					dump_tuple (al_tuple, l_str)
 				end
-				-- End Recursive traversal of data structure
-			else
-				across a_child.lower |..| a_child.upper as i loop
-					across 1 |..| (dimensions.count-1) as  ic loop
-						io.put_string (dimensions[ic.item].out + " ")
-					end
-					io.put_string ( i.item.out + " " + "****" + " ") io.put_new_line
-				end
+				k := k + 1
 			end
 		ensure
 			class
