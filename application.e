@@ -53,7 +53,7 @@ feature  -- creation
 			-- End - Create and fill table
 
 			-- Render table
-			{FLAT_RENDERER}.dump_01 (table)
+--			print ({FLAT_RENDERER}.dump_01 (block))
 
 		end
 
@@ -101,7 +101,7 @@ feature  -- creation
 			-- End - Create and fill table	
 
 			-- Render table
-			{FLAT_RENDERER}.dump_01 (block)
+--			print ({FLAT_RENDERER}.dump_01 (block))
 
 		end
 
@@ -149,7 +149,7 @@ feature  -- creation
 			-- End - Create and fill table		
 
 			-- Render table
-			{FLAT_RENDERER}.dump_01 (block)
+--			print ({FLAT_RENDERER}.dump_01 (block))
 
 		end
 
@@ -177,7 +177,7 @@ feature  -- creation
 			-- End - Create and fill table			
 
 			-- Render table
-			{FLAT_RENDERER}.dump_01 (table)
+--			print ({FLAT_RENDERER}.dump_01 (block))
 
 		end
 
@@ -226,7 +226,7 @@ feature  -- creation
 			-- End - Create and fill table
 
 			-- Render table
-			{FLAT_RENDERER}.dump_01 (block)
+--			print ({FLAT_RENDERER}.dump_01 (block))
 
 		end
 
@@ -259,7 +259,7 @@ feature  -- creation
 			-- End - Create and fill table
 
 			-- Render table
-			{FLAT_RENDERER}.dump_01 (table)
+--			print ({FLAT_RENDERER}.dump_01 (table))
 
 		end
 
@@ -290,7 +290,7 @@ feature  -- creation
 			-- End - Create and fill table
 
 			-- Render table
-			{FLAT_RENDERER}.dump_01 (table)
+--			print ({FLAT_RENDERER}.dump_01 (table))
 
 		end
 

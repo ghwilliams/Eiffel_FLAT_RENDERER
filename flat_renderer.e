@@ -27,7 +27,7 @@ class
 
 feature {ANY} -- exported dump procedures
 
-	dump_01 (a_data_structure: ANY)
+	dump_01 (a_data_structure: ANY): STRING
 		note
 			arguments: "[
 						a_data_structure  Data sctructure to be dumped
@@ -39,89 +39,57 @@ feature {ANY} -- exported dump procedures
 		local
 
 		do
+			create Result.make_empty
 			if attached {READABLE_INDEXABLE[ANY]} a_data_structure as al_ri then
-				dump_readable_indexable (al_ri, "")
+				Result := dump_readable_indexable (al_ri, "")
 			end
-		ensure
-			class
 		end
 
 feature {NONE} -- Private auxiliary routines
 
-	dump_readable_indexable (a_child: READABLE_INDEXABLE[detachable separate ANY]; a_str: STRING)
-		note
-			arguments: "[
-				a_child			  Data sctructure to be dumped
-				a_str             Work string containing a counter for each dimension
-				]"
-			purpose: "[
-				To print to the console all the elements in the supplied data structure 'a_child'.
-				This version specialized for READABLE_INDEXABLE class.
-			]"
-			how: "[
-				By depth-first traversing the data structure and printing its elements one per line.
-				The tricky part is to save a count for each dimension such that
-				the indices for each printed dimension can be shown properly
-				-- What is definition of dimension in this routine?
-				--   Dimension is defined by the number of nested structures
-				--   composing 'a_data_structure.
-				-- For example:
-				--  a - v: ARRAY[LINKED_LIST[STRING]]
-				--      In this case v is considered as two-dimensional
-				--  b - ARRAY2[STRING]
-				--      This is a one-dimensional data structure - ARRAY2 stores its elements
-				--      in a single linear array. So although ARRAY2 is used to represent
-				--      real world two-dimensional structures, this routine sees it as
-				--      one-dimensional.
-				]"
-			example: "[
-				For a 2D data structure we can visualize it as
-				    a b c                1,1   1,2   1,3
-				    d e f   => indices   2,1   2,2   2,3				    
-				 if it was defined as ARRAY[ARRAY[G]] the most internal data is printed first.
-				 In the example above lines are printed first.
-				 
-				 The output from this routine for the example above will be
-				 	1 1 a
-				 	1 2 b
-				 	1 3 c
-				 	2 1 d
-				 	2 2 e
-				 	2 3 f
-				 In the above output each column (except the last, wich contains the data itself)
-				 is associated with one dimensions of the data.
-				 ]"
+	dump_readable_indexable (a_child: READABLE_INDEXABLE[detachable separate ANY]; a_parent_result: STRING): STRING
+			-- Output content of `a_child' and append to `a_parent_result'.
 		local
-			keys: ARRAY[STRING]
+			l_keys: ARRAY [detachable HASHABLE]
 			k: INTEGER
-			l_str: STRING
+			l_result: STRING
 		do
-			if attached {HASH_TABLE[ANY,STRING]} a_child as al_ht then
-				keys := al_ht.current_keys
+			create l_result.make_empty
+			if attached {HASH_TABLE [ANY, detachable HASHABLE]} a_child as al_ht then
+				l_keys := al_ht.current_keys
 			end
-
-			from k:= a_child.lower until k > a_child.upper loop
-				if keys /= Void then
-					l_str := a_str + " " + keys[k+1]
+			from k := a_child.lower until k > a_child.upper loop
+				if attached l_keys and then attached {HASHABLE} l_keys [k + 1] as al_key then
+					l_result.append_character ('#')
+					l_result.append_string_general (al_key.out)
 				else
-					l_str := a_str + " " + k.out
+					l_result.append_string_general (k.out)
 				end
-
-				if attached {STRING} a_child.item(k) as al_str then
-					io.put_string (l_str + " ")
-					io.put_string (al_str + " ") io.put_new_line
-				elseif attached {NUMERIC} a_child.item(k) as al_num then
-					io.put_string (l_str + " ")
-					io.put_string (al_num.out + " ") io.put_new_line
-				elseif attached {READABLE_INDEXABLE[detachable separate ANY]} a_child.item(k) as al_ri then
-					dump_readable_indexable (al_ri, l_str)
+				l_result.append_character (':')
+				if attached {STRING} a_child.item (k) as al_string then
+					l_result.append_string_general (al_string)
+				elseif attached {READABLE_INDEXABLE [detachable separate ANY]} a_child.item (k) as al_ri then
+					l_result.append_string_general (dump_readable_indexable (al_ri, l_result))
+					l_result.remove_tail (1)
+				elseif attached {NUMERIC} a_child.item (k) as al_numeric then
+					l_result.append_string_general (al_numeric.out)
+				elseif attached {DECIMAL} a_child.item (k) as al_decimal then
+					l_result.append_string_general (al_decimal.out)
+				elseif attached {ABSOLUTE} a_child.item (k) as al_time then
+					l_result.append_string_general (al_time.out)
+				else
+					l_result.append_string_general ("n/a")
 				end
-
+				l_result.adjust
+				l_result.append_character (',')
 				k := k + 1
 			end
-		ensure
-			class
-
+			l_result.adjust
+			Result := l_result
+			if Result [Result.count] = ',' then
+				Result.remove_tail (1)
+			end
+			Result.append_character ('%N')
 		end
 
 end
