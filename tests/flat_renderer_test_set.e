@@ -38,9 +38,10 @@ feature -- Test routines
 feature {NONE} -- Support
 
 	data_1_string: STRING = "[
-1:1:01/02/20182:[0,2501,-2]3:Larry4:Curly5:Moe6:Shemp7:10018:100.99099
-2:1:blah_stuff2:13:24:3
-3:1:102:203:10:20:59.000 AM
+1:1:01/02/2018,2:25.01,3:Larry,4:Curly,5:Moe,6:Shemp,7:1001,8:100.99099
+2:1:blah_stuff,2:1,3:2,4:3
+3:1:10,2:20,3:10:20:59.000 AM
+
 
 ]"
 
