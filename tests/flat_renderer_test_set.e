@@ -20,8 +20,8 @@ inherit
 
 feature -- Test routines
 
-	creation_test
-			-- New test routine
+	flat_renderer_ad_hoc_arrayed_list_test
+			-- Test of {FLAT_RENDERER} with an ad-hoc contented ARRAYED_LIST of ARRAYs-of-ANY.
 		local
 			l_rend: FLAT_RENDERER
 			l_data: ARRAYED_LIST [ARRAY [ANY]]
