@@ -1,6 +1,6 @@
 note
 	description: "[
-		Eiffel tests that can be executed by testing tool.
+		Testing of the FLAT_RENDERER class.
 	]"
 	testing: "type/manual"
 
@@ -48,6 +48,7 @@ feature {NONE} -- Support
 feature -- Tests: Application
 
 	test_1
+			-- Test of FLAT_RENDERER for _____?
 		local
 			l_table: ARRAY [ARRAY [STRING]]            	-- Data source 2D-table
 			l_row: ARRAY [STRING]                     	-- One row of data			
@@ -79,6 +80,8 @@ feature -- Tests: Application
 			create l_rend
 			assert_strings_equal ("test_1", test_1_string, l_rend.dump_01 (l_table))
 		end
+
+feature {NONE} -- Support
 
 	test_1_string: STRING = "[
 1:1:Orange,2:Banana,3:Apple,4:Melom
