@@ -27,15 +27,18 @@ feature -- Test routines
 			l_data: ARRAYED_LIST [ARRAY [ANY]]
 		do
 			create l_rend
-			create l_data.make (3)
-			l_data.force (<<create {DATE}.make (2018, 1, 2), create {DECIMAL}.make_from_string ("25.01"), "Larry", "Curly", "Moe", "Shemp", 1001, 100.99099>>)
-			l_data.force (<<"blah_stuff", 1, 2, 3>>)
-			l_data.force (<<10, 20, create {TIME}.make (10, 20, 59)>>)
-
-			assert_strings_equal ("data_1", data_1_string, l_rend.dump_01 (l_data))
+			assert_strings_equal ("data_1", data_1_string, l_rend.dump_01 (data_1_table))
 		end
 
 feature {NONE} -- Support
+
+	data_1_table: ARRAYED_LIST [ARRAY [ANY]]
+		once
+			create Result.make (3)
+			Result.force (<<create {DATE}.make (2018, 1, 2), create {DECIMAL}.make_from_string ("25.01"), "Larry", "Curly", "Moe", "Shemp", 1001, 100.99099>>)
+			Result.force (<<"blah_stuff", 1, 2, 3>>)
+			Result.force (<<10, 20, create {TIME}.make (10, 20, 59)>>)
+		end
 
 	data_1_string: STRING = "[
 1:1:01/02/2018,2:25.01,3:Larry,4:Curly,5:Moe,6:Shemp,7:1001,8:100.99099
