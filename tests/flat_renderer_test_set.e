@@ -51,38 +51,24 @@ feature -- Tests: Application
 	test_1
 			-- Test of FLAT_RENDERER for _____?
 		local
-			l_table: ARRAY [ARRAY [STRING]]            	-- Data source 2D-table
-			l_row: ARRAY [STRING]                     	-- One row of data			
-			l_rows_count,			                    -- Number of rows in table
-			l_columns_count: INTEGER                 	-- Number of columns in table
-			l_rend: FLAT_RENDERER						-- Renderer
+			l_rend: FLAT_RENDERER
 		do
-			-- Set table dimensions
-			l_rows_count := 3
-			l_columns_count := 4
-
-			-- Create and fill table
-			-- Start
-			create l_row.make_filled ("", 1, l_columns_count)
-			create l_table.make_filled (l_row, 1, l_rows_count)
-
-			across 1 |..| l_rows_count as ic loop
-				create l_row.make_filled ("", 1, l_columns_count)
-				l_table.put (l_row, ic.item)
-			end
-
-			l_table[1].item(1) := "Orange";     l_table[1].item(2) := "Banana"; l_table[1].item(3) := "Apple";    l_table[1].item(4) := "Melom"
-			l_table[2].item(1) := "Eiffel";     l_table[2].item(2) := "Java";   l_table[2].item(3) := "C++";      l_table[2].item(4) := "C#"
-			l_table[3].item(1) := "Stepanov";   l_table[3].item(2) := "Wirth";  l_table[3].item(3) := "B. Meyer"; l_table[3].item(4) := "Stroustrup"
-
-			-- End - Create and fill table
-
-			-- Render table
 			create l_rend
-			assert_strings_equal ("test_1", test_1_string, l_rend.dump_01 (l_table))
+			assert_strings_equal ("test_1", test_1_string, l_rend.dump_01 (test_1_table))
 		end
 
 feature {NONE} -- Support
+
+	test_1_table: ARRAY [ARRAY [STRING]]
+		local
+			l_list: ARRAYED_LIST [ARRAY [STRING]]
+		once
+			create l_list.make (3)
+			l_list.force (<<"Orange", "Banana", "Apple", "Melom">>)
+			l_list.force (<<"Eiffel", "Java", "C++", "C#">>)
+			l_list.force (<<"Stepanov", "Wirth", "B. Meyer", "Stroustrup">>)
+			Result := l_list.to_array
+		end
 
 	test_1_string: STRING = "[
 1:1:Orange,2:Banana,3:Apple,4:Melom
