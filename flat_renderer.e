@@ -43,6 +43,7 @@ feature {ANY} -- exported dump procedures
 			if attached {READABLE_INDEXABLE[ANY]} a_data_structure as al_ri then
 				dump_readable_indexable (al_ri, Result)
 			end
+			Result.adjust
 		end
 
 feature {NONE} -- Private auxiliary routines

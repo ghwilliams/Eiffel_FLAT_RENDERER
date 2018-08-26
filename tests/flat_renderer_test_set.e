@@ -41,8 +41,6 @@ feature {NONE} -- Support
 1:1:01/02/2018,2:25.01,3:Larry,4:Curly,5:Moe,6:Shemp,7:1001,8:100.99099
 2:1:blah_stuff,2:1,3:2,4:3
 3:1:10,2:20,3:10:20:59.000 AM
-
-
 ]"
 
 feature -- Tests: Application
@@ -87,8 +85,6 @@ feature {NONE} -- Support
 1:1:Orange,2:Banana,3:Apple,4:Melom
 2:1:Eiffel,2:Java,3:C++,4:C#
 3:1:Stepanov,2:Wirth,3:B. Meyer,4:Stroustrup
-
-
 ]"
 
 feature -- Test
@@ -102,6 +98,8 @@ feature -- Test
 			create l_rend
 			assert_strings_equal ("test_2", test_2_string, l_rend.dump_01 (table_2))
 		end
+
+feature {NONE} -- Support
 
 	table_2: ARRAY [HASH_TABLE[INTEGER, STRING]]
 		local
@@ -121,13 +119,9 @@ feature -- Test
 			Result := l_list.to_array
 		end
 
-feature {NONE} -- Support
-
 	test_2_string: STRING = "[
 1:#Zurich:400,#Geneva:198,#Basel:176,#Lausanne:146
 2:#Balzer:1894,#Duryea Car:1893,#Daimler-Maybach Stahlradwagen:1889,#La Marquise:1884
-
-
 ]"
 
 end
