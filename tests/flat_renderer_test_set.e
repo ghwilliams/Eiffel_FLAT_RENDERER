@@ -105,20 +105,20 @@ feature -- Test
 
 	table_2: ARRAY [HASH_TABLE[INTEGER, STRING]]
 		local
-			l_array: ARRAYED_LIST [HASH_TABLE [INTEGER, STRING]]
+			l_list: ARRAYED_LIST [HASH_TABLE [INTEGER, STRING]]
 		once
-			create l_array.make (2)
-			l_array.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
-			l_array.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
-			l_array [1].force (400, "Zurich")
-			l_array [1].force (198, "Geneva")
-			l_array [1].force (176, "Basel")
-			l_array [1].force (146, "Lausanne")
-			l_array [2].force (1894, "Balzer")
-			l_array [2].force (1893, "Duryea Car")
-			l_array [2].force (1889, "Daimler-Maybach Stahlradwagen")
-			l_array [2].force (1884, "La Marquise")
-			Result := l_array.to_array
+			create l_list.make (2)
+			l_list.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
+			l_list.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
+			l_list [1].force (400, "Zurich")
+			l_list [1].force (198, "Geneva")
+			l_list [1].force (176, "Basel")
+			l_list [1].force (146, "Lausanne")
+			l_list [2].force (1894, "Balzer")
+			l_list [2].force (1893, "Duryea Car")
+			l_list [2].force (1889, "Daimler-Maybach Stahlradwagen")
+			l_list [2].force (1884, "La Marquise")
+			Result := l_list.to_array
 		end
 
 feature {NONE} -- Support
