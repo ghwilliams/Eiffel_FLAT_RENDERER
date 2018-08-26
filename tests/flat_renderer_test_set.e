@@ -91,6 +91,60 @@ feature {NONE} -- Support
 
 ]"
 
+feature -- Test
+
+	test_2
+			-- First test using a 2-dimensional data structure using HASH_TABLE
+		local
+			l_table: ARRAY[HASH_TABLE[INTEGER, STRING]]  -- Data source 2D-table
+			l_row: HASH_TABLE[INTEGER, STRING]           -- One row of data			
+			l_rows_count,                                -- Number of rows in table
+			l_columns_count: INTEGER                     -- Number of columns in table
+			l_rend: FLAT_RENDERER					     -- Renderer
+		do
+			-- Set table dimensions
+			l_rows_count := 2
+			l_columns_count := 4
+
+			-- Create table structure
+			-- Start
+			create l_row.make (l_columns_count)
+			create l_table.make_filled (l_row, 1, l_rows_count)
+
+			across 1 |..| l_rows_count as ic loop
+				create l_row.make (l_columns_count)
+				l_table.put (l_row, ic.item)
+			end
+			-- End - Create table structure
+
+			-- Fill table with test data
+			-- Start
+			l_table[1].put(400,"Zurich");
+			l_table[1].put(198,"Geneva");
+			l_table[1].put(176,"Basel");
+			l_table[1].put(146,"Lausanne")
+
+			l_table[2].put(1894,"Balzer");
+			l_table[2].put(1893,"Duryea Car");
+			l_table[2].put(1889,"Daimler-Maybach Stahlradwagen");
+			l_table[2].put(1884,"La Marquise")
+			-- End - Fill table
+
+			-- Render table
+			create l_rend
+			assert_strings_equal ("test_2", test_2_string, l_rend.dump_01 (l_table))
+
+		end
+
+feature {NONE} -- Support
+
+	test_2_string: STRING = "[
+1:#Zurich:400,#Geneva:198,#Basel:176,#Lausanne:146
+2:#Balzer:1894,#Duryea Car:1893,#Daimler-Maybach Stahlradwagen:1889,#La Marquise:1884
+
+
+]"
+
 end
 
 
