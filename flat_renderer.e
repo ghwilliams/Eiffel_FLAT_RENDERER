@@ -8,6 +8,7 @@ note
 		Bertrand Meyer on the Eiffel users forum:
 			see thread Renders, a small community project by Bertrand Meyer.
 		]"
+	EIS: "name=eiffel_users_forum", "src=https://groups.google.com/forum/#!topic/eiffel-users/N9fLnpNvrOw"
 	how: "[
 		This class supplies procedures for dumping data sctructures conforming
 		to very specific abstract base classes.
@@ -16,7 +17,7 @@ note
 		The dump algorithms traverse the data structures recursively until a
 		basic type is found when the element value is printed.
 		The following basic types are currently implemented
-		  * STRING, INTEGER, REAL, and DOUBLE
+		  * STRING, INTEGER, REAL, DOUBLE, DECIMAL, DATE_TIME, DATE, and TIME
 		]"
 	author: "Williams Lima"
 	date: "$Date$"
@@ -27,7 +28,8 @@ class
 
 feature {ANY} -- exported dump procedures
 
-	dump_01 (a_data_structure: ANY): STRING
+	dump (a_data_structure: ANY): STRING
+			-- `dump' contents of `a_data_structure' to a more human-readable string format.
 		note
 			arguments: "[
 						a_data_structure  Data sctructure to be dumped
@@ -43,6 +45,7 @@ feature {ANY} -- exported dump procedures
 			if attached {READABLE_INDEXABLE[ANY]} a_data_structure as al_ri then
 				dump_readable_indexable (al_ri, Result)
 			end
+			Result.adjust
 		end
 
 feature {NONE} -- Private auxiliary routines
@@ -77,7 +80,7 @@ feature {NONE} -- Private auxiliary routines
 				else
 					a_parent_result.append_string_general ("n/a")
 				end
-				if k < a_child.upper and not (a_parent_result [a_parent_result.count] = '%N') then
+				if k < a_child.upper and a_parent_result [a_parent_result.count] /= '%N' then
 					a_parent_result.append_character (',')
 				end
 				k := k + 1
