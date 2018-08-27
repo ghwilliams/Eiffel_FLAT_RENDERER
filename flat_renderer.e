@@ -51,53 +51,101 @@ feature {ANY} -- exported dump procedures
 
 feature {NONE} -- Implementation
 
-	dump_iterable (a_child: ITERABLE [ANY]; a_parent_result: STRING)
+	dump_iterable (a_child: ANY; a_parent_result: STRING)
 			-- `dump_iterable' contents of `a_child', appending to `a_parent_result'
 		local
 			l_keys: ARRAY [detachable HASHABLE]
-			i: INTEGER
+			l_key: ANY
+
+			l_temp_stack,            -- Used to correct the order of output
+			                         -- The natural order of depth-first using a stack
+			                         -- must be reversed in order to get the same order
+			                         -- of the implementation using the recursive version.			
+
+			l_stack: LINKED_STACK[ANY]
+			l_child: ANY
+			l_keys_per_level: LINKED_LIST[ARRAY [detachable HASHABLE]]
 		do
-			if attached {HASH_TABLE [ANY, detachable HASHABLE]} a_child as al_hash_table then
-				l_keys := al_hash_table.current_keys
-			end
-			across
-				a_child as ic
+			create l_stack.make
+			create l_temp_stack.make
+			create l_keys_per_level.make
+			create l_keys.make_empty
+
 			from
-				i := 1
+				l_stack.put (a_child)
+			until
+				l_stack.is_empty
 			loop
-				if attached l_keys and then attached {HASHABLE} l_keys [i] as al_key then
-					a_parent_result.append_character ('#')
-					a_parent_result.append_string_general (al_key.out)
-				else
-					a_parent_result.append_string_general (i.out)
+				-- Get next element to be processed
+				l_child := l_stack.item
+				l_stack.remove
+
+				if l_keys_per_level.count > 0 then
+					l_keys := l_keys_per_level.last
+					l_key := l_keys[1]
+					l_keys.remove_head (1)
+					l_keys.rebase (1)
+
+					if attached {INTEGER} l_key as al_key then
+						a_parent_result.append_string_general (al_key.out)
+					elseif attached {HASHABLE} l_key as al_key then
+						a_parent_result.append_character ('#')
+						a_parent_result.append_string_general (al_key.out)
+					end
+					a_parent_result.append_character (':')
 				end
-				a_parent_result.append_character (':')
-				if attached {STRING} ic.item as al_string then
+
+				if attached {STRING} l_child as al_string then
 					a_parent_result.append_string_general (al_string)
 					a_parent_result.append_character (',')
-				elseif attached {CHARACTER} ic.item as al_character then
+				elseif attached {CHARACTER} l_child as al_character then
 					a_parent_result.append_string_general (al_character.out)
 					a_parent_result.append_character (',')
-				elseif attached {DECIMAL} ic.item as al_decimal then
+				elseif attached {DECIMAL} l_child as al_decimal then
 					a_parent_result.append_string_general (al_decimal.out)
 					a_parent_result.append_character (',')
-				elseif attached {NUMERIC} ic.item as al_numeric then
+				elseif attached {NUMERIC} l_child as al_numeric then
 					a_parent_result.append_string_general (al_numeric.out)
 					a_parent_result.append_character (',')
-				elseif attached {ABSOLUTE} ic.item as al_time then
+				elseif attached {ABSOLUTE} l_child as al_time then
 					a_parent_result.append_string_general (al_time.out)
 					a_parent_result.append_character (',')
-				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
-					dump_iterable (al_iterable, a_parent_result)
+				elseif attached {ITERABLE[ANY]} l_child as al_child  then
+					-- Add descendants of l_child to the wrking stack
+					-- Firstly use temp stack (used to reverse the order of elements)
+					across al_child as ic from l_temp_stack.wipe_out loop
+						l_temp_stack.put (ic.item)
+					end
+					-- then put them in the working stack with the correct order
+					across l_temp_stack as is loop
+						l_stack.put (is.item)
+					end
+					-- End adding descendants to working stack
+
+					-- Setup keys for descendants of l_child
+					if attached {HASH_TABLE [ANY, detachable HASHABLE]} al_child as al_hash_table then
+						l_keys := al_hash_table.current_keys
+					else
+						l_keys := (1 |..| l_temp_stack.count).as_array
+					end
+					-- End setting up keys	
+
+					l_keys_per_level.force (l_keys)
 				else
 					a_parent_result.append_string_general ("n/a")
 					a_parent_result.append_character (',')
 				end
-				i := i + 1
-			end
-			if a_parent_result [a_parent_result.count] = ',' then
-				a_parent_result.remove_tail (1)
-				a_parent_result.append_character ('%N')
+
+				if l_keys_per_level.last.count = 0 then
+					-- If current levels keys exausted remove from the hierarchy keys list
+					l_keys_per_level.finish
+					l_keys_per_level.remove
+
+					if a_parent_result.count > 0 and then a_parent_result [a_parent_result.count] = ',' then
+						a_parent_result.remove_tail (1)
+						a_parent_result.append_character ('%N')
+					end
+				end
 			end
 		end
 
