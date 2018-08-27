@@ -80,7 +80,7 @@ feature {NONE} -- Private auxiliary routines
 				else
 					a_parent_result.append_string_general ("n/a")
 				end
-				if k < a_child.upper and not (a_parent_result [a_parent_result.count] = '%N') then
+				if k < a_child.upper and a_parent_result [a_parent_result.count] /= '%N' then
 					a_parent_result.append_character (',')
 				end
 				k := k + 1

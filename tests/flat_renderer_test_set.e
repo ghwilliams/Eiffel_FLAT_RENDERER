@@ -25,11 +25,10 @@ inherit
 
 feature -- Tests
 
-	flat_renderer_ad_hoc_arrayed_list_test
+	ad_hoc_test
 			-- Test of {FLAT_RENDERER} with an ad-hoc contented ARRAYED_LIST of ARRAYs-of-ANY.
 		local
 			l_rend: FLAT_RENDERER
-			l_data: ARRAYED_LIST [ARRAY [ANY]]
 		do
 			create l_rend
 			assert_strings_equal ("data_1", data_1_string, l_rend.dump (data_1_table))
@@ -38,6 +37,7 @@ feature -- Tests
 feature {NONE} -- Support
 
 	data_1_table: ARRAYED_LIST [ARRAY [ANY]]
+			-- `data_1_table' data structure for testing.
 		once
 			create Result.make (3)
 			Result.force (<<create {DATE}.make (2018, 1, 2), create {DECIMAL}.make_from_string ("25.01"), "Larry", "Curly", "Moe", "Shemp", 1001, 100.99099>>)
@@ -50,8 +50,9 @@ feature {NONE} -- Support
 2:1:blah_stuff,2:1,3:2,4:3
 3:1:10,2:20,3:10:20:59.000 AM
 ]"
+		-- `data_1_string' as "expected" value in `assert_strings_equal' calls.
 
-feature -- Tests
+feature -- Tests: Test 1
 
 	test_1
 			-- Test of FLAT_RENDERER for _____?
@@ -62,9 +63,10 @@ feature -- Tests
 			assert_strings_equal ("test_1", test_1_string, l_rend.dump (test_1_table))
 		end
 
-feature {NONE} -- Support
+feature {NONE} -- Support: Test 1
 
 	test_1_table: ARRAY [ARRAY [STRING]]
+			-- `test_1_table' data structure for testing.
 		local
 			l_list: ARRAYED_LIST [ARRAY [STRING]]
 		once
@@ -80,8 +82,9 @@ feature {NONE} -- Support
 2:1:Eiffel,2:Java,3:C++,4:C#
 3:1:Stepanov,2:Wirth,3:B. Meyer,4:Stroustrup
 ]"
+		-- `test_1_string' as "expected" value in `assert_strings_equal' calls.
 
-feature -- Tests
+feature -- Tests: Test 2
 
 	test_2
 			-- First test using a 2-dimensional data structure using HASH_TABLE
@@ -90,12 +93,13 @@ feature -- Tests
 		do
 			-- Render table
 			create l_rend
-			assert_strings_equal ("test_2", test_2_string, l_rend.dump (table_2))
+			assert_strings_equal ("test_2", test_2_string, l_rend.dump (table_2_table))
 		end
 
-feature {NONE} -- Support
+feature {NONE} -- Support: Test 2
 
-	table_2: ARRAY [HASH_TABLE[INTEGER, STRING]]
+	table_2_table: ARRAY [HASH_TABLE[INTEGER, STRING]]
+			-- `table_2_table' data structure for testing.
 		local
 			l_list: ARRAYED_LIST [HASH_TABLE [INTEGER, STRING]]
 		once
@@ -117,6 +121,7 @@ feature {NONE} -- Support
 1:#Zurich:400,#Geneva:198,#Basel:176,#Lausanne:146
 2:#Balzer:1894,#Duryea Car:1893,#Daimler-Maybach Stahlradwagen:1889,#La Marquise:1884
 ]"
+		-- `test_2_string' as "expected" value in `assert_strings_equal' calls.
 
 end
 
