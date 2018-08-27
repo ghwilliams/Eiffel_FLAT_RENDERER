@@ -25,7 +25,7 @@ inherit
 
 feature -- Test: Breaking Attempts
 
-	breaking_attempt_tests
+	basic_types_tests
 			-- Attempt to break it!
 		note
 			design: "[
@@ -41,20 +41,20 @@ feature -- Test: Breaking Attempts
 			l_renderer: FLAT_RENDERER
 		do
 			create l_renderer
-			assert_strings_equal ("breaking_1_string", "1:b,2:l,3:a,4:h", l_renderer.dump ("blah"))
-			assert_strings_equal ("breaking_2_integer", "100", l_renderer.dump (100))
-			assert_strings_equal ("breaking_3_date", "05/15/2018", l_renderer.dump (create {DATE}.make (2018, 5, 15)))
-			assert_strings_equal ("breaking_4_time", "10:45:30.000 AM", l_renderer.dump (create {TIME}.make (10, 45, 30)))
-			assert_strings_equal ("breaking_5_void", "Void", l_renderer.dump (Void))
-			assert_strings_equal ("breaking_6_real", "10.99", l_renderer.dump (10.99))
-			assert_strings_equal ("breaking_7_decimal", "[0,2133,-2]", l_renderer.dump (create {DECIMAL}.make_from_string ("21.33")))
-			assert_strings_equal ("breaking_8_character", "X", l_renderer.dump ('X'))
-			assert_strings_equal ("breaking_9_boolean", "True", l_renderer.dump (True))
+			assert_strings_equal ("basic_1_string", "1:b,2:l,3:a,4:h", l_renderer.dump ("blah"))
+			assert_strings_equal ("basic_2_integer", "100", l_renderer.dump (100))
+			assert_strings_equal ("basic_3_date", "05/15/2018", l_renderer.dump (create {DATE}.make (2018, 5, 15)))
+			assert_strings_equal ("basic_4_time", "10:45:30.000 AM", l_renderer.dump (create {TIME}.make (10, 45, 30)))
+			assert_strings_equal ("basic_5_void", "Void", l_renderer.dump (Void))
+			assert_strings_equal ("basic_6_real", "10.99", l_renderer.dump (10.99))
+			assert_strings_equal ("basic_7_decimal", "[0,2133,-2]", l_renderer.dump (create {DECIMAL}.make_from_string ("21.33")))
+			assert_strings_equal ("basic_8_character", "X", l_renderer.dump ('X'))
+			assert_strings_equal ("basic_9_boolean", "True", l_renderer.dump (True))
 		end
 
-feature {NONE} -- Support: Breaking Attempts
+feature {NONE} -- Support: Basic Types
 
-
+	-- None so far
 
 feature -- Tests
 
