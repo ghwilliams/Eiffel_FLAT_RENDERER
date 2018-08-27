@@ -28,7 +28,8 @@ class
 
 feature {ANY} -- exported dump procedures
 
-	dump_01 (a_data_structure: ANY): STRING
+	dump (a_data_structure: ANY): STRING
+			-- `dump' contents of `a_data_structure' to a more human-readable string format.
 		note
 			arguments: "[
 						a_data_structure  Data sctructure to be dumped

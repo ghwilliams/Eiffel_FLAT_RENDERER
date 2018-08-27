@@ -32,7 +32,7 @@ feature -- Tests
 			l_data: ARRAYED_LIST [ARRAY [ANY]]
 		do
 			create l_rend
-			assert_strings_equal ("data_1", data_1_string, l_rend.dump_01 (data_1_table))
+			assert_strings_equal ("data_1", data_1_string, l_rend.dump (data_1_table))
 		end
 
 feature {NONE} -- Support
@@ -59,7 +59,7 @@ feature -- Tests
 			l_rend: FLAT_RENDERER
 		do
 			create l_rend
-			assert_strings_equal ("test_1", test_1_string, l_rend.dump_01 (test_1_table))
+			assert_strings_equal ("test_1", test_1_string, l_rend.dump (test_1_table))
 		end
 
 feature {NONE} -- Support
@@ -90,7 +90,7 @@ feature -- Tests
 		do
 			-- Render table
 			create l_rend
-			assert_strings_equal ("test_2", test_2_string, l_rend.dump_01 (table_2))
+			assert_strings_equal ("test_2", test_2_string, l_rend.dump (table_2))
 		end
 
 feature {NONE} -- Support
