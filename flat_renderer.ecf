@@ -21,6 +21,7 @@
 		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="decimal" location="$ISE_LIBRARY\contrib\library\math\decimal\decimal\decimal.ecf"/>
+		<library name="randomizer" location="$GITHUB\randomizer\randomizer.ecf"/>
 		<library name="test_extension" location="$GITHUB\test_extension\test_extension.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
 		<cluster name="flat_renderer" location=".\" recursive="true"/>
