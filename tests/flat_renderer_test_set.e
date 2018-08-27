@@ -18,7 +18,7 @@ inherit
 			default_create
 		end
 
-feature -- Test routines
+feature -- Tests
 
 	flat_renderer_ad_hoc_arrayed_list_test
 			-- Test of {FLAT_RENDERER} with an ad-hoc contented ARRAYED_LIST of ARRAYs-of-ANY.
@@ -46,7 +46,7 @@ feature {NONE} -- Support
 3:1:10,2:20,3:10:20:59.000 AM
 ]"
 
-feature -- Tests: Application
+feature -- Tests
 
 	test_1
 			-- Test of FLAT_RENDERER for _____?
@@ -76,7 +76,7 @@ feature {NONE} -- Support
 3:1:Stepanov,2:Wirth,3:B. Meyer,4:Stroustrup
 ]"
 
-feature -- Test
+feature -- Tests
 
 	test_2
 			-- First test using a 2-dimensional data structure using HASH_TABLE
