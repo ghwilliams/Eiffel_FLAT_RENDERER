@@ -53,8 +53,8 @@ feature {NONE} -- Implementation
 			l_keys: ARRAY [detachable HASHABLE]
 			i: INTEGER
 		do
-			if attached {HASH_TABLE [ANY, detachable HASHABLE]} a_child as al_ht then
-				l_keys := al_ht.current_keys
+			if attached {HASH_TABLE [ANY, detachable HASHABLE]} a_child as al_hash_table then
+				l_keys := al_hash_table.current_keys
 			end
 			across
 				a_child as ic
