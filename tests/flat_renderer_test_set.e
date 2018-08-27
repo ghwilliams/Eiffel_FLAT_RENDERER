@@ -37,6 +37,15 @@ feature -- Test: Breaking Attempts
 				]"
 			eis_note: "See page 147 for the list of basic types"
 			EIS: "name=eiffel_ecma_spec", "src=https://www.ecma-international.org/publications/standards/Ecma-367.htm"
+			note_about_strings: "[
+				You may note (in the code below) that sending in a STRING object results in a
+				list of characters in the output of the `dump' call. This is because a manifest
+				STRING is (in fact) ITERABLE (as a set of characters). This causes the `dump'
+				routine to traverse the characters of the passed string. Otherwise, if one sends
+				some other data structure, which contains item elements which are strings, those
+				strings are output as expected (i.e. if you send "blah", you get "blah" and not
+				the 1:b,2:l,3:a,4:h output below).
+				]"
 		local
 			l_renderer: FLAT_RENDERER
 		do

@@ -53,6 +53,11 @@ feature {NONE} -- Implementation
 
 	dump_iterable (a_child: ITERABLE [ANY]; a_parent_result: STRING)
 			-- `dump_iterable' contents of `a_child', appending to `a_parent_result'
+		note
+			see_also: "[
+				See the {FLAT_RENDERER_TEST_SET} in the test target for more information
+				and examples of this class being used.
+				]"
 		local
 			l_keys: ARRAY [detachable HASHABLE]
 			i: INTEGER
