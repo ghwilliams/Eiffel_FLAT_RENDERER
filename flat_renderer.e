@@ -76,8 +76,6 @@ feature {NONE} -- Implementation
 				elseif attached {CHARACTER} ic.item as al_character then
 					a_parent_result.append_string_general (al_character.out)
 					a_parent_result.append_character (',')
-				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
-					dump_iterable (al_iterable, a_parent_result)
 				elseif attached {DECIMAL} ic.item as al_decimal then
 					a_parent_result.append_string_general (al_decimal.out)
 					a_parent_result.append_character (',')
@@ -87,6 +85,8 @@ feature {NONE} -- Implementation
 				elseif attached {ABSOLUTE} ic.item as al_time then
 					a_parent_result.append_string_general (al_time.out)
 					a_parent_result.append_character (',')
+				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
+					dump_iterable (al_iterable, a_parent_result)
 				else
 					a_parent_result.append_string_general ("n/a")
 					a_parent_result.append_character (',')
