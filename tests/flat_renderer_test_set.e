@@ -18,6 +18,11 @@ inherit
 			default_create
 		end
 
+	TEST_SET_BRIDGE
+		undefine
+			default_create
+		end
+
 feature -- Tests
 
 	flat_renderer_ad_hoc_arrayed_list_test
