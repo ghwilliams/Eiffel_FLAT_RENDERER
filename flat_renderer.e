@@ -170,11 +170,12 @@ feature {NONE} -- Implementation
 			check last_is_newline: last_character (a_parent_result) = '%N' end
 		end
 
-	last_character (s: STRING): CHARACTER
+	last_character (a_string: STRING): CHARACTER
+			-- what is the `last_character' in non-empty `a_string'?
 		require
-			not_empty: not s.is_empty
+			not_empty: not a_string.is_empty
 		do
-			Result := s [s.count]
+			Result := a_string [a_string.count]
 		end
 
 end
