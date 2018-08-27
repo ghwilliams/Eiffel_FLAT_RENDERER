@@ -1,4 +1,4 @@
-note
+﻿note
 	description: "[
 		Testing of the FLAT_RENDERER class.
 	]"
@@ -22,6 +22,32 @@ inherit
 		undefine
 			default_create
 		end
+
+feature -- Test: Breaking Attempts
+
+	breaking_attempt_tests
+			-- Attempt to break it!
+		note
+			design: "[
+				First: Send the `l_renderer' basic data types alone to see what happens.
+					(in this case, it was discovered that there was not basic `out' call
+					for types not conforming to ITERABLE [G]). This form of testing revealed
+					a bug! It also revealed another bug when sent a STRING, where the trailing
+					commas were not being handled properly.
+				]"
+		local
+			l_renderer: FLAT_RENDERER
+		do
+			create l_renderer
+			assert_strings_equal ("breaking_1_string", "1:b,2:l,3:a,4:h", l_renderer.dump ("blah"))
+			assert_strings_equal ("breaking_2_integer", "100", l_renderer.dump (100))
+			assert_strings_equal ("breaking_3_date", "05/15/2018", l_renderer.dump (create {DATE}.make (2018, 5, 15)))
+			assert_strings_equal ("breaking_4_time", "10:45:30.000 AM", l_renderer.dump (create {TIME}.make (10, 45, 30)))
+		end
+
+feature {NONE} -- Support: Breaking Attempts
+
+
 
 feature -- Tests
 

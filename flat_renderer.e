@@ -13,10 +13,10 @@ note
 		This class supplies procedures for dumping data sctructures conforming
 		to very specific abstract base classes.
 		The following abstract classes are currently supported:
-		  * READABLE_INDEXABLE
-		The dump algorithms traverse the data structures recursively until a
-		basic type is found when the element value is printed.
-		The following basic types are currently implemented
+		  * ITERABLE [G]
+		The dump algorithm traverses the data structures recursively until a
+		basic type is found, and then the element value is printed.
+		The following basic types are currently implemented:
 		  * STRING, INTEGER, REAL, DOUBLE, DECIMAL, DATE_TIME, DATE, and TIME
 		]"
 	author: "Williams Lima"
@@ -37,55 +37,66 @@ feature {ANY} -- exported dump procedures
 			purpose: "[
 						This routine is an iterface to the internal routine render_01.
 			         ]"
-
-		local
-			l_result: STRING
 		do
 			create Result.make_empty
-			if attached {READABLE_INDEXABLE[ANY]} a_data_structure as al_ri then
-				dump_readable_indexable (al_ri, Result)
+			if attached {ITERABLE [ANY]} a_data_structure as al_iterable then
+				dump_iterable (al_iterable, Result)
+			else
+				Result.append_string_general (a_data_structure.out)
 			end
 			Result.adjust
 		end
 
-feature {NONE} -- Private auxiliary routines
+feature {NONE} -- Implementation
 
-	dump_readable_indexable (a_child: READABLE_INDEXABLE[detachable separate ANY]; a_parent_result: STRING)
-			-- Output content of `a_child' and append to `a_parent_result'.
+	dump_iterable (a_child: ITERABLE [ANY]; a_parent_result: STRING)
+			-- `dump_iterable' contents of `a_child', appending to `a_parent_result'
 		local
 			l_keys: ARRAY [detachable HASHABLE]
-			k: INTEGER
+			i: INTEGER
 		do
-			if attached {HASH_TABLE [ANY, detachable HASHABLE]} a_child as al_ht then
-				l_keys := al_ht.current_keys
+			if attached {HASH_TABLE [ANY, detachable HASHABLE]} a_child as al_hash_table then
+				l_keys := al_hash_table.current_keys
 			end
-			from k := a_child.lower until k > a_child.upper loop
-				if attached l_keys and then attached {HASHABLE} l_keys [k + 1] as al_key then
+			across
+				a_child as ic
+			from
+				i := 1
+			loop
+				if attached l_keys and then attached {HASHABLE} l_keys [i] as al_key then
 					a_parent_result.append_character ('#')
 					a_parent_result.append_string_general (al_key.out)
 				else
-					a_parent_result.append_string_general (k.out)
+					a_parent_result.append_string_general (i.out)
 				end
 				a_parent_result.append_character (':')
-				if attached {STRING} a_child.item (k) as al_string then
+				if attached {STRING} ic.item as al_string then
 					a_parent_result.append_string_general (al_string)
-				elseif attached {READABLE_INDEXABLE [detachable separate ANY]} a_child.item (k) as al_ri then
-					dump_readable_indexable (al_ri, a_parent_result)
-				elseif attached {DECIMAL} a_child.item (k) as al_decimal then
+					a_parent_result.append_character (',')
+				elseif attached {CHARACTER} ic.item as al_character then
+					a_parent_result.append_string_general (al_character.out)
+					a_parent_result.append_character (',')
+				elseif attached {DECIMAL} ic.item as al_decimal then
 					a_parent_result.append_string_general (al_decimal.out)
-				elseif attached {NUMERIC} a_child.item (k) as al_numeric then
+					a_parent_result.append_character (',')
+				elseif attached {NUMERIC} ic.item as al_numeric then
 					a_parent_result.append_string_general (al_numeric.out)
-				elseif attached {ABSOLUTE} a_child.item (k) as al_time then
+					a_parent_result.append_character (',')
+				elseif attached {ABSOLUTE} ic.item as al_time then
 					a_parent_result.append_string_general (al_time.out)
+					a_parent_result.append_character (',')
+				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
+					dump_iterable (al_iterable, a_parent_result)
 				else
 					a_parent_result.append_string_general ("n/a")
-				end
-				if k < a_child.upper and a_parent_result [a_parent_result.count] /= '%N' then
 					a_parent_result.append_character (',')
 				end
-				k := k + 1
+				i := i + 1
 			end
-			a_parent_result.append_character ('%N')
+			if a_parent_result [a_parent_result.count] = ',' then
+				a_parent_result.remove_tail (1)
+				a_parent_result.append_character ('%N')
+			end
 		end
 
 end
