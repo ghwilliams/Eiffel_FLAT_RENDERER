@@ -41,6 +41,8 @@ feature {ANY} -- exported dump procedures
 			create Result.make_empty
 			if attached {ITERABLE [ANY]} a_data_structure as al_iterable then
 				dump_iterable (al_iterable, Result)
+			else
+				Result.append_string_general (a_data_structure.out)
 			end
 			Result.adjust
 		end
@@ -71,10 +73,11 @@ feature {NONE} -- Implementation
 				if attached {STRING} ic.item as al_string then
 					a_parent_result.append_string_general (al_string)
 					a_parent_result.append_character (',')
+				elseif attached {CHARACTER} ic.item as al_character then
+					a_parent_result.append_string_general (al_character.out)
+					a_parent_result.append_character (',')
 				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
 					dump_iterable (al_iterable, a_parent_result)
-					a_parent_result.remove_tail (1)
-					a_parent_result.append_character ('%N')
 				elseif attached {DECIMAL} ic.item as al_decimal then
 					a_parent_result.append_string_general (al_decimal.out)
 					a_parent_result.append_character (',')
@@ -89,6 +92,10 @@ feature {NONE} -- Implementation
 					a_parent_result.append_character (',')
 				end
 				i := i + 1
+			end
+			if a_parent_result [a_parent_result.count] = ',' then
+				a_parent_result.remove_tail (1)
+				a_parent_result.append_character ('%N')
 			end
 		end
 
