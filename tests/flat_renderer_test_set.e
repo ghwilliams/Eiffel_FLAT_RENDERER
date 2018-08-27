@@ -59,11 +59,23 @@ feature -- Test: Breaking Attempts
 			assert_strings_equal ("basic_7_decimal", "[0,2133,-2]", l_renderer.dump (create {DECIMAL}.make_from_string ("21.33")))
 			assert_strings_equal ("basic_8_character", "X", l_renderer.dump ('X'))
 			assert_strings_equal ("basic_9_boolean", "True", l_renderer.dump (True))
+			assert_strings_equal ("basic_10_any", anything_out, l_renderer.dump (anything))
 		end
 
 feature {NONE} -- Support: Basic Types
 
-	-- None so far
+	anything: ANY
+			-- An instance of {ANY} as `anything'.
+		once
+			create Result
+		end
+
+	anything_out: STRING
+			-- Specially prepared `out' of `anything'.
+		do
+			Result := anything.out
+			Result.adjust
+		end
 
 feature -- Tests
 
