@@ -8,6 +8,7 @@ note
 		Bertrand Meyer on the Eiffel users forum:
 			see thread Renders, a small community project by Bertrand Meyer.
 		]"
+	EIS: "name=eiffel_users_forum", "src=https://groups.google.com/forum/#!topic/eiffel-users/N9fLnpNvrOw"
 	how: "[
 		This class supplies procedures for dumping data sctructures conforming
 		to very specific abstract base classes.
@@ -16,7 +17,7 @@ note
 		The dump algorithms traverse the data structures recursively until a
 		basic type is found when the element value is printed.
 		The following basic types are currently implemented
-		  * STRING, INTEGER, REAL, and DOUBLE
+		  * STRING, INTEGER, REAL, DOUBLE, DECIMAL, DATE_TIME, DATE, and TIME
 		]"
 	author: "Williams Lima"
 	date: "$Date$"
