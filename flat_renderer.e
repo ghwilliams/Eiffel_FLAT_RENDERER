@@ -28,7 +28,7 @@ class
 
 feature {ANY} -- exported dump procedures
 
-	dump (a_data_structure: ANY): STRING
+	dump (a_data_structure: detachable ANY): STRING
 			-- `dump' contents of `a_data_structure' to a more human-readable string format.
 		note
 			arguments: "[
@@ -41,8 +41,10 @@ feature {ANY} -- exported dump procedures
 			create Result.make_empty
 			if attached {ITERABLE [ANY]} a_data_structure as al_iterable then
 				dump_iterable (al_iterable, Result)
+			elseif attached a_data_structure as al_data_structure then
+				Result.append_string_general (al_data_structure.out)
 			else
-				Result.append_string_general (a_data_structure.out)
+				Result.append_string_general ("Void")
 			end
 			Result.adjust
 		end

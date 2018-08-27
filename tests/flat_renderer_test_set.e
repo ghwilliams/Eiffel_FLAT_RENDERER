@@ -35,6 +35,8 @@ feature -- Test: Breaking Attempts
 					a bug! It also revealed another bug when sent a STRING, where the trailing
 					commas were not being handled properly.
 				]"
+			eis_note: "See page 147 for the list of basic types"
+			EIS: "name=eiffel_ecma_spec", "src=https://www.ecma-international.org/publications/standards/Ecma-367.htm"
 		local
 			l_renderer: FLAT_RENDERER
 		do
@@ -43,6 +45,11 @@ feature -- Test: Breaking Attempts
 			assert_strings_equal ("breaking_2_integer", "100", l_renderer.dump (100))
 			assert_strings_equal ("breaking_3_date", "05/15/2018", l_renderer.dump (create {DATE}.make (2018, 5, 15)))
 			assert_strings_equal ("breaking_4_time", "10:45:30.000 AM", l_renderer.dump (create {TIME}.make (10, 45, 30)))
+			assert_strings_equal ("breaking_5_void", "Void", l_renderer.dump (Void))
+			assert_strings_equal ("breaking_6_real", "10.99", l_renderer.dump (10.99))
+			assert_strings_equal ("breaking_7_decimal", "[0,2133,-2]", l_renderer.dump (create {DECIMAL}.make_from_string ("21.33")))
+			assert_strings_equal ("breaking_8_character", "X", l_renderer.dump ('X'))
+			assert_strings_equal ("breaking_9_boolean", "True", l_renderer.dump (True))
 		end
 
 feature {NONE} -- Support: Breaking Attempts
