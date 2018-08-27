@@ -45,7 +45,7 @@ feature {ANY} -- exported dump procedures
 			Result.adjust
 		end
 
-feature {NONE} -- Private auxiliary routines
+feature {NONE} -- Implementation
 
 	dump_iterable (a_child: ITERABLE [ANY]; a_parent_result: STRING)
 			-- `dump_iterable' contents of `a_child', appending to `a_parent_result'
