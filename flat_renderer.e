@@ -1,6 +1,8 @@
 note
 	description: "[
 		Print the elements of a given (possibly multidimensional) data structure
+		This version uses an iterative depth-first algorithm for traversing
+		the data structure hierarchy.
 		]"
 	purpose: "[
 		This is an attempt to solve the problem on how to debug
@@ -19,7 +21,7 @@ note
 		The following basic types are currently implemented:
 		  * STRING, INTEGER, REAL, DOUBLE, DECIMAL, DATE_TIME, DATE, and TIME
 		]"
-	author: "Williams Lima"
+
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -83,6 +85,7 @@ feature {NONE} -- Implementation
 				if l_keys_per_level.count > 0 then
 					l_keys := l_keys_per_level.last
 					l_key := l_keys[1]
+
 					l_keys.remove_head (1)
 					l_keys.rebase (1)
 
@@ -111,7 +114,7 @@ feature {NONE} -- Implementation
 					a_parent_result.append_string_general (al_time.out)
 					a_parent_result.append_character (',')
 				elseif attached {ITERABLE[ANY]} l_child as al_child  then
-					-- Add descendants of l_child to the wrking stack
+					-- Add descendants of l_child to the working stack
 					-- Firstly use temp stack (used to reverse the order of elements)
 					across al_child as ic from l_temp_stack.wipe_out loop
 						l_temp_stack.put (ic.item)
@@ -130,7 +133,7 @@ feature {NONE} -- Implementation
 					end
 					-- End setting up keys	
 
-					l_keys_per_level.force (l_keys)
+					l_keys_per_level.force (l_keys) -- Add another hierarchy level
 				else
 					a_parent_result.append_string_general ("n/a")
 					a_parent_result.append_character (',')
