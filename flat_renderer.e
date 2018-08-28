@@ -16,8 +16,8 @@ note
 		to very specific abstract base classes.
 		The following abstract classes are currently supported:
 		  * ITERABLE [G]
-		The dump algorithm traverses the data structures recursively until a
-		basic type is found, and then the element value is printed.
+		The dump algorithm traverses the data structures until a
+		basic type is found, when the respective element value is printed.
 		The following basic types are currently implemented:
 		  * STRING, INTEGER, REAL, DOUBLE, DECIMAL, DATE_TIME, DATE, and TIME
 		]"
@@ -42,7 +42,7 @@ feature {ANY} -- exported dump procedures
 		do
 			create Result.make_empty
 			if attached {ITERABLE [ANY]} a_data_structure as al_iterable then
-				dump_iterable (al_iterable, Result)
+				dump_iterable_iterative (al_iterable, Result)
 			elseif attached a_data_structure as al_data_structure then
 				Result.append_string_general (al_data_structure.out)
 			else
@@ -53,8 +53,8 @@ feature {ANY} -- exported dump procedures
 
 feature {NONE} -- Implementation
 
-	dump_iterable (a_child: ANY; a_parent_result: STRING)
-			-- `dump_iterable' contents of `a_child', appending to `a_parent_result'
+	dump_iterable_iterative (a_child: ANY; a_parent_result: STRING)
+			-- `dump_iterable_iterative' contents of `a_child', appending to `a_parent_result'
 		local
 			l_keys: ARRAY [detachable HASHABLE]
 			l_key: ANY
@@ -64,8 +64,11 @@ feature {NONE} -- Implementation
 			                         -- must be reversed in order to get the same order
 			                         -- of the implementation using the recursive version.			
 
-			l_stack: LINKED_STACK[ANY]
-			l_child: ANY
+			l_stack: LINKED_STACK[ANY] -- Stores data structures to be processed
+			l_child: ANY               -- The current data structure bein processed
+
+			-- An array per hierarchy level with the keys used to print the elements
+			-- in the respective level.
 			l_keys_per_level: LINKED_LIST[ARRAY [detachable HASHABLE]]
 		do
 			create l_stack.make
@@ -140,7 +143,8 @@ feature {NONE} -- Implementation
 				end
 
 				if l_keys_per_level.last.count = 0 then
-					-- If current levels keys exausted remove from the hierarchy keys list
+					-- If the keys in the current level have been exausted
+					-- remove this level from the hierarchy.
 					l_keys_per_level.finish
 					l_keys_per_level.remove
 
