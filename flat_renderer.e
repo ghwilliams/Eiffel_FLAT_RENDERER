@@ -140,14 +140,21 @@ feature {NONE} -- Implementation
 					a_parent_result.append_string_general ("n/a")
 					a_parent_result.append_character (',')
 				end
-				if not l_keys_per_level.is_empty and then l_keys_per_level.last.count = 0 then
-						-- If the keys in the current level have been exausted
-						-- remove this level from the hierarchy.
-					l_keys_per_level.finish
-					l_keys_per_level.remove
+				if l_keys_per_level.is_empty then
 					if a_parent_result.count > 0 and then a_parent_result [a_parent_result.count] = ',' then
 						a_parent_result.remove_tail (1)
 						a_parent_result.append_character ('%N')
+					end
+				else
+					if l_keys_per_level.last.count = 0 then
+							-- If the keys in the current level have been exausted
+							-- remove this level from the hierarchy.
+						l_keys_per_level.finish
+						l_keys_per_level.remove
+						if a_parent_result.count > 0 and then a_parent_result [a_parent_result.count] = ',' then
+							a_parent_result.remove_tail (1)
+							a_parent_result.append_character ('%N')
+						end
 					end
 				end
 			end
