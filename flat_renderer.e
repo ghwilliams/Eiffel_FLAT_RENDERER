@@ -19,7 +19,7 @@ note
 		The following basic types are currently implemented:
 		  * STRING, INTEGER, REAL, DOUBLE, DECIMAL, DATE_TIME, DATE, and TIME
 		]"
-	author: "Williams Lima"
+	
 	date: "$Date$"
 	revision: "$Revision$"
 
