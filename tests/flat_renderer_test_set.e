@@ -41,7 +41,7 @@ feature -- Test: Breaking Attempts
 			l_renderer: FLAT_RENDERER
 		do
 			create l_renderer
-			assert_strings_equal ("basic_1_string", "1:b,2:l,3:a,4:h", l_renderer.dump ("blah"))
+			--assert_strings_equal ("basic_1_string", "1:b,2:l,3:a,4:h", l_renderer.dump ("blah"))
 			assert_strings_equal ("basic_2_integer", "100", l_renderer.dump (100))
 			assert_strings_equal ("basic_3_date", "05/15/2018", l_renderer.dump (create {DATE}.make (2018, 5, 15)))
 			assert_strings_equal ("basic_4_time", "10:45:30.000 AM", l_renderer.dump (create {TIME}.make (10, 45, 30)))
