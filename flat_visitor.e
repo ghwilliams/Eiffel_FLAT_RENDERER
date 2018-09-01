@@ -92,7 +92,7 @@ feature {ANY} -- exported dump procedures
 
 feature -- Implementation
 
-	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [ANY, BOOLEAN]])
+	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [ANY, BOOLEAN, HASHABLE]])
 			-- `dump_internal' version of `dump' contents of `a_child', appending to `a_parent_result'
 		note
 			see_also: "[
@@ -100,6 +100,8 @@ feature -- Implementation
 				and examples of this class being used.
 			]"
 		local
+			l_keys: detachable ARRAY [detachable HASHABLE]
+			l_key: HASHABLE
 			i: INTEGER
 		do
 			across
@@ -109,12 +111,20 @@ feature -- Implementation
 			invariant
 				postive_non_zero: i >= 1
 			loop
-				a_action(ic.item, True) --call_agent(ic.item, True)
+				if attached {HASH_TABLE [ANY, detachable HASHABLE]} a_child as al_hash_table then
+					l_keys := al_hash_table.current_keys
+				end
+				if attached l_keys and then attached {HASHABLE} l_keys [i] as al_key then
+					l_key := al_key
+				else
+					l_key := i
+				end
+				a_action(ic.item, True, l_key)
 				if attached {STRING} ic.item as al_str then
 				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
 					visit_internal (al_iterable, a_action)
 				end
-				a_action(ic.item, False)--call_agent(ic.item, False)
+				a_action(ic.item, False, l_key)
 				i := i + 1
 			end
 		end

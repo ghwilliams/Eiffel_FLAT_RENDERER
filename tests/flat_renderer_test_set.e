@@ -199,6 +199,7 @@ feature -- Tests: Test 1
 			create l_rend.make
 
 			l_visit.visit_internal(test_1_table, agent l_rend.render)
+			l_rend.my_str.adjust
 
 			assert_strings_equal ("test_1", test_1_string, l_rend.my_str)
 		end
