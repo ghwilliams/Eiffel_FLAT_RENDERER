@@ -53,6 +53,7 @@ feature -- Test: Breaking Attempts
 			create l_visit.make
 			create l_renderer.make
 
+			l_renderer.reset
 			l_visit.visit_internal("blah", agent l_renderer.render)
 			l_renderer.render_result.adjust
 
@@ -92,7 +93,8 @@ feature -- Test: Breaking Attempts
 			l_visit.visit(create {DECIMAL}.make_from_string ("21.33"), agent l_renderer.render)
 			l_renderer.render_result.adjust
 
---			assert_strings_equal ("basic_7_decimal", "[0,2133,-2]", l_renderer.render_result)
+			assert_strings_equal ("basic_7_decimal", "21.33", l_renderer.render_result)
+
 			l_renderer.reset
 			l_visit.visit('X', agent l_renderer.render)
 			l_renderer.render_result.adjust
@@ -103,7 +105,7 @@ feature -- Test: Breaking Attempts
 			l_visit.visit(True, agent l_renderer.render)
 			l_renderer.render_result.adjust
 
---			assert_strings_equal ("basic_9_boolean", "True", l_renderer.render_result)
+			assert_strings_equal ("basic_9_boolean", "True", l_renderer.render_result)
 
 			l_renderer.reset
 			l_visit.visit(anything, agent l_renderer.render)
