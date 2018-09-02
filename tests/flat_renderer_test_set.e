@@ -48,55 +48,68 @@ feature -- Test: Breaking Attempts
 				]"
 		local
 			l_visit: FLAT_VISITOR
-			l_renderer: FLAT_RENDERER
+			l_renderer: FLAT_RENDERER_CSV
 		do
 			create l_visit.make
 			create l_renderer.make
 
 			l_visit.visit_internal("blah", agent l_renderer.render)
-			l_renderer.my_str.adjust
+			l_renderer.render_result.adjust
 
-			assert_strings_equal ("basic_1_string", "1:b,2:l,3:a,4:h", l_renderer.my_str)
+			assert_strings_equal ("basic_1_string", "1:b,2:l,3:a,4:h", l_renderer.render_result)
 
 			l_renderer.reset
 			l_visit.visit(100, agent l_renderer.render)
-			l_renderer.my_str.adjust
+			l_renderer.render_result.adjust
 
-			assert_strings_equal ("basic_2_integer", "100", l_renderer.my_str)
+			assert_strings_equal ("basic_2_integer", "100", l_renderer.render_result)
 
 			l_renderer.reset
 			l_visit.visit(create {DATE}.make (2018, 5, 15), agent l_renderer.render)
-			l_renderer.my_str.adjust
+			l_renderer.render_result.adjust
 
-			assert_strings_equal ("basic_3_date", "05/15/2018", l_renderer.my_str)
+			assert_strings_equal ("basic_3_date", "05/15/2018", l_renderer.render_result)
 
 			l_renderer.reset
 			l_visit.visit(create {TIME}.make (10, 45, 30), agent l_renderer.render)
-			l_renderer.my_str.adjust
+			l_renderer.render_result.adjust
 
-			assert_strings_equal ("basic_4_time", "10:45:30.000 AM", l_renderer.my_str)
+			assert_strings_equal ("basic_4_time", "10:45:30.000 AM", l_renderer.render_result)
 
 			l_renderer.reset
 			l_visit.visit(Void, agent l_renderer.render)
-			l_renderer.my_str.adjust
+			l_renderer.render_result.adjust
 
-			assert_strings_equal ("basic_5_void", "Void", l_renderer.my_str)
+			assert_strings_equal ("basic_5_void", "Void", l_renderer.render_result)
 
 			l_renderer.reset
 			l_visit.visit(10.99, agent l_renderer.render)
-			l_renderer.my_str.adjust
+			l_renderer.render_result.adjust
 
-			assert_strings_equal ("basic_6_real", "10.99", l_renderer.my_str)
+			assert_strings_equal ("basic_6_real", "10.99", l_renderer.render_result)
 
 			l_renderer.reset
 			l_visit.visit(create {DECIMAL}.make_from_string ("21.33"), agent l_renderer.render)
-			l_renderer.my_str.adjust
+			l_renderer.render_result.adjust
 
-			assert_strings_equal ("basic_7_decimal", "[0,2133,-2]", l_renderer.my_str)
+--			assert_strings_equal ("basic_7_decimal", "[0,2133,-2]", l_renderer.render_result)
+			l_renderer.reset
+			l_visit.visit('X', agent l_renderer.render)
+			l_renderer.render_result.adjust
 
---			assert_strings_equal ("basic_8_character", "X", l_renderer.dump ('X'))
---			assert_strings_equal ("basic_9_boolean", "True", l_renderer.dump (True))
---			assert_strings_equal ("basic_10_any", anything_out, l_renderer.dump (anything))
+			assert_strings_equal ("basic_8_character", "X", l_renderer.render_result)
+
+			l_renderer.reset
+			l_visit.visit(True, agent l_renderer.render)
+			l_renderer.render_result.adjust
+
+--			assert_strings_equal ("basic_9_boolean", "True", l_renderer.render_result)
+
+			l_renderer.reset
+			l_visit.visit(anything, agent l_renderer.render)
+			l_renderer.render_result.adjust
+
+			assert_strings_equal ("basic_10_any", anything_out, l_renderer.render_result)
 		end
 
 feature {NONE} -- Support: Basic Types
@@ -201,15 +214,15 @@ feature -- Tests: Ad hoc
 			-- Test of {FLAT_VISITOR} with an ad-hoc contented ARRAYED_LIST of ARRAYs-of-ANY.
 		local
 			l_visit: FLAT_VISITOR
-			l_rend: FLAT_RENDERER
+			l_rend: FLAT_RENDERER_CSV
 		do
 			create l_visit.make
 			create l_rend.make
 
 			l_visit.visit_internal(data_1_table, agent l_rend.render)
-			l_rend.my_str.adjust
+			l_rend.render_result.adjust
 
-			assert_strings_equal ("data_1", data_1_string, l_rend.my_str)
+			assert_strings_equal ("data_1", data_1_string, l_rend.render_result)
 		end
 
 feature {NONE} -- Support
@@ -236,15 +249,15 @@ feature -- Tests: Test 1
 			-- Test of FLAT_RENDERER for _____?
 		local
 			l_visit: FLAT_VISITOR
-			l_rend: FLAT_RENDERER
+			l_rend: FLAT_RENDERER_CSV
 		do
 			create l_visit.make
 			create l_rend.make
 
 			l_visit.visit_internal(test_1_table, agent l_rend.render)
-			l_rend.my_str.adjust
+			l_rend.render_result.adjust
 
-			assert_strings_equal ("test_1", test_1_string, l_rend.my_str)
+			assert_strings_equal ("test_1", test_1_string, l_rend.render_result)
 		end
 
 feature {NONE} -- Support: Test 1		
@@ -274,16 +287,16 @@ feature -- Tests: Test 2
 			-- First test using a 2-dimensional data structure using HASH_TABLE
 		local
 			l_visit: FLAT_VISITOR
-			l_rend: FLAT_RENDERER					     -- Renderer
+			l_rend: FLAT_RENDERER_CSV					     -- Renderer
 		do
 			-- Render table
 			create l_visit.make
 			create l_rend.make
 
 			l_visit.visit_internal(test_2_table, agent l_rend.render)
-			l_rend.my_str.adjust
+			l_rend.render_result.adjust
 
-			assert_strings_equal ("test_2", test_2_string, l_rend.my_str)
+			assert_strings_equal ("test_2", test_2_string, l_rend.render_result)
 		end
 
 feature {NONE} -- Support: Test 2
