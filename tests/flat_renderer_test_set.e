@@ -25,57 +25,94 @@ inherit
 
 feature -- Test: Breaking Attempts
 
---	basic_types_tests
---			-- Attempt to break it!
---		note
---			design: "[
---				First: Send the `l_renderer' basic data types alone to see what happens.
---					(in this case, it was discovered that there was not basic `out' call
---					for types not conforming to ITERABLE [G]). This form of testing revealed
---					a bug! It also revealed another bug when sent a STRING, where the trailing
---					commas were not being handled properly.
---				]"
---			eis_note: "See page 147 for the list of basic types"
---			EIS: "name=eiffel_ecma_spec", "src=https://www.ecma-international.org/publications/standards/Ecma-367.htm"
---			note_about_strings: "[
---				You may note (in the code below) that sending in a STRING object results in a
---				list of characters in the output of the `dump' call. This is because a manifest
---				STRING is (in fact) ITERABLE (as a set of characters). This causes the `dump'
---				routine to traverse the characters of the passed string. Otherwise, if one sends
---				some other data structure, which contains item elements which are strings, those
---				strings are output as expected (i.e. if you send "blah", you get "blah" and not
---				the 1:b,2:l,3:a,4:h output below).
---				]"
---		local
---			l_renderer: FLAT_RENDERER
---		do
---			create l_renderer.make
---			assert_strings_equal ("basic_1_string", "1:b,2:l,3:a,4:h", l_renderer.dump ("blah"))
---			assert_strings_equal ("basic_2_integer", "100", l_renderer.dump (100))
---			assert_strings_equal ("basic_3_date", "05/15/2018", l_renderer.dump (create {DATE}.make (2018, 5, 15)))
---			assert_strings_equal ("basic_4_time", "10:45:30.000 AM", l_renderer.dump (create {TIME}.make (10, 45, 30)))
---			assert_strings_equal ("basic_5_void", "Void", l_renderer.dump (Void))
---			assert_strings_equal ("basic_6_real", "10.99", l_renderer.dump (10.99))
---			assert_strings_equal ("basic_7_decimal", "[0,2133,-2]", l_renderer.dump (create {DECIMAL}.make_from_string ("21.33")))
+	basic_types_tests
+			-- Attempt to break it!
+		note
+			design: "[
+				First: Send the `l_renderer' basic data types alone to see what happens.
+					(in this case, it was discovered that there was not basic `out' call
+					for types not conforming to ITERABLE [G]). This form of testing revealed
+					a bug! It also revealed another bug when sent a STRING, where the trailing
+					commas were not being handled properly.
+				]"
+			eis_note: "See page 147 for the list of basic types"
+			EIS: "name=eiffel_ecma_spec", "src=https://www.ecma-international.org/publications/standards/Ecma-367.htm"
+			note_about_strings: "[
+				You may note (in the code below) that sending in a STRING object results in a
+				list of characters in the output of the `dump' call. This is because a manifest
+				STRING is (in fact) ITERABLE (as a set of characters). This causes the `dump'
+				routine to traverse the characters of the passed string. Otherwise, if one sends
+				some other data structure, which contains item elements which are strings, those
+				strings are output as expected (i.e. if you send "blah", you get "blah" and not
+				the 1:b,2:l,3:a,4:h output below).
+				]"
+		local
+			l_visit: FLAT_VISITOR
+			l_renderer: FLAT_RENDERER
+		do
+			create l_visit.make
+			create l_renderer.make
+
+			l_visit.visit_internal("blah", agent l_renderer.render)
+			l_renderer.my_str.adjust
+
+			assert_strings_equal ("basic_1_string", "1:b,2:l,3:a,4:h", l_renderer.my_str)
+
+			l_renderer.reset
+			l_visit.visit(100, agent l_renderer.render)
+			l_renderer.my_str.adjust
+
+			assert_strings_equal ("basic_2_integer", "100", l_renderer.my_str)
+
+			l_renderer.reset
+			l_visit.visit(create {DATE}.make (2018, 5, 15), agent l_renderer.render)
+			l_renderer.my_str.adjust
+
+			assert_strings_equal ("basic_3_date", "05/15/2018", l_renderer.my_str)
+
+			l_renderer.reset
+			l_visit.visit(create {TIME}.make (10, 45, 30), agent l_renderer.render)
+			l_renderer.my_str.adjust
+
+			assert_strings_equal ("basic_4_time", "10:45:30.000 AM", l_renderer.my_str)
+
+			l_renderer.reset
+			l_visit.visit(Void, agent l_renderer.render)
+			l_renderer.my_str.adjust
+
+			assert_strings_equal ("basic_5_void", "Void", l_renderer.my_str)
+
+			l_renderer.reset
+			l_visit.visit(10.99, agent l_renderer.render)
+			l_renderer.my_str.adjust
+
+			assert_strings_equal ("basic_6_real", "10.99", l_renderer.my_str)
+
+			l_renderer.reset
+			l_visit.visit(create {DECIMAL}.make_from_string ("21.33"), agent l_renderer.render)
+			l_renderer.my_str.adjust
+
+			assert_strings_equal ("basic_7_decimal", "[0,2133,-2]", l_renderer.my_str)
+
 --			assert_strings_equal ("basic_8_character", "X", l_renderer.dump ('X'))
 --			assert_strings_equal ("basic_9_boolean", "True", l_renderer.dump (True))
 --			assert_strings_equal ("basic_10_any", anything_out, l_renderer.dump (anything))
---		end
+		end
 
---feature {NONE} -- Support: Basic Types
+feature {NONE} -- Support: Basic Types
 
---	anything: ANY
---			-- An instance of {ANY} as `anything'.
---		once
---			create Result
---		end
+	anything: ANY
+			-- An instance of {ANY} as `anything'.
+		once
+			create Result
+		end
 
---	anything_out: STRING
---			-- Specially prepared `out' of `anything'.
---		do
---			Result := anything.out
---			Result.adjust
---		end
+	anything_out: STRING
+			-- Specially prepared `out' of `anything'.
+		do
+			Result := anything.out
+			Result.adjust
+		end
 
 --feature -- Tests: Big Data
 
@@ -158,34 +195,40 @@ feature -- Test: Breaking Attempts
 --]"
 --		-- `big_data_2_string' for comparison to `big_data_2' data table data.
 
---feature -- Tests: Ad hoc
+feature -- Tests: Ad hoc
 
---	ad_hoc_test
---			-- Test of {FLAT_VISITOR} with an ad-hoc contented ARRAYED_LIST of ARRAYs-of-ANY.
---		local
---			l_rend: FLAT_RENDERER
---		do
---			create l_rend.make
---			assert_strings_equal ("data_1", data_1_string, l_rend.dump (data_1_table))
---		end
+	ad_hoc_test
+			-- Test of {FLAT_VISITOR} with an ad-hoc contented ARRAYED_LIST of ARRAYs-of-ANY.
+		local
+			l_visit: FLAT_VISITOR
+			l_rend: FLAT_RENDERER
+		do
+			create l_visit.make
+			create l_rend.make
 
---feature {NONE} -- Support
+			l_visit.visit_internal(data_1_table, agent l_rend.render)
+			l_rend.my_str.adjust
 
---	data_1_table: ARRAYED_LIST [ARRAY [ANY]]
---			-- `data_1_table' data structure for testing.
---		once
---			create Result.make (3)
---			Result.force (<<create {DATE}.make (2018, 1, 2), create {DECIMAL}.make_from_string ("25.01"), "Larry", "Curly", "Moe", "Shemp", 1001, 100.99099>>)
---			Result.force (<<"blah_stuff", 1, 2, 3>>)
---			Result.force (<<10, 20, create {TIME}.make (10, 20, 59)>>)
---		end
+			assert_strings_equal ("data_1", data_1_string, l_rend.my_str)
+		end
 
---	data_1_string: STRING = "[
---1:1:01/02/2018,2:25.01,3:Larry,4:Curly,5:Moe,6:Shemp,7:1001,8:100.99099
---2:1:blah_stuff,2:1,3:2,4:3
---3:1:10,2:20,3:10:20:59.000 AM
---]"
---		-- `data_1_string' as "expected" value in `assert_strings_equal' calls.
+feature {NONE} -- Support
+
+	data_1_table: ARRAYED_LIST [ARRAY [ANY]]
+			-- `data_1_table' data structure for testing.
+		once
+			create Result.make (3)
+			Result.force (<<create {DATE}.make (2018, 1, 2), create {DECIMAL}.make_from_string ("25.01"), "Larry", "Curly", "Moe", "Shemp", 1001, 100.99099>>)
+			Result.force (<<"blah_stuff", 1, 2, 3>>)
+			Result.force (<<10, 20, create {TIME}.make (10, 20, 59)>>)
+		end
+
+	data_1_string: STRING = "[
+1:1:01/02/2018,2:25.01,3:Larry,4:Curly,5:Moe,6:Shemp,7:1001,8:100.99099
+2:1:blah_stuff,2:1,3:2,4:3
+3:1:10,2:20,3:10:20:59.000 AM
+]"
+		-- `data_1_string' as "expected" value in `assert_strings_equal' calls.
 
 feature -- Tests: Test 1
 
@@ -204,12 +247,7 @@ feature -- Tests: Test 1
 			assert_strings_equal ("test_1", test_1_string, l_rend.my_str)
 		end
 
-feature {NONE} -- Support: Test 1	
-
-	test_1_action(a_data: ANY; a_sense: BOOLEAN)
-		do
-			--test_1_result := test_1_string
-		end
+feature {NONE} -- Support: Test 1		
 
 	test_1_table: ARRAY [ARRAY [STRING]]
 			-- `test_1_table' data structure for testing.
@@ -230,44 +268,50 @@ feature {NONE} -- Support: Test 1
 ]"
 		-- `test_1_string' as "expected" value in `assert_strings_equal' calls.
 
---feature -- Tests: Test 2
+feature -- Tests: Test 2
 
---	test_2
---			-- First test using a 2-dimensional data structure using HASH_TABLE
---		local
---			l_rend: FLAT_RENDERER					     -- Renderer
---		do
---			-- Render table
---			create l_rend.make
---			assert_strings_equal ("test_2", test_2_string, l_rend.visit (table_2_table))
---		end
+	test_2
+			-- First test using a 2-dimensional data structure using HASH_TABLE
+		local
+			l_visit: FLAT_VISITOR
+			l_rend: FLAT_RENDERER					     -- Renderer
+		do
+			-- Render table
+			create l_visit.make
+			create l_rend.make
 
---feature {NONE} -- Support: Test 2
+			l_visit.visit_internal(test_2_table, agent l_rend.render)
+			l_rend.my_str.adjust
 
---	table_2_table: ARRAY [HASH_TABLE[INTEGER, STRING]]
---			-- `table_2_table' data structure for testing.
---		local
---			l_list: ARRAYED_LIST [HASH_TABLE [INTEGER, STRING]]
---		once
---			create l_list.make (2)
---			l_list.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
---			l_list.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
---			l_list [1].force (400, "Zurich")
---			l_list [1].force (198, "Geneva")
---			l_list [1].force (176, "Basel")
---			l_list [1].force (146, "Lausanne")
---			l_list [2].force (1894, "Balzer")
---			l_list [2].force (1893, "Duryea Car")
---			l_list [2].force (1889, "Daimler-Maybach Stahlradwagen")
---			l_list [2].force (1884, "La Marquise")
---			Result := l_list.to_array
---		end
+			assert_strings_equal ("test_2", test_2_string, l_rend.my_str)
+		end
 
---	test_2_string: STRING = "[
---1:#Zurich:400,#Geneva:198,#Basel:176,#Lausanne:146
---2:#Balzer:1894,#Duryea Car:1893,#Daimler-Maybach Stahlradwagen:1889,#La Marquise:1884
---]"
---		-- `test_2_string' as "expected" value in `assert_strings_equal' calls.
+feature {NONE} -- Support: Test 2
+
+	test_2_table: ARRAY [HASH_TABLE[INTEGER, STRING]]
+			-- `table_2_table' data structure for testing.
+		local
+			l_list: ARRAYED_LIST [HASH_TABLE [INTEGER, STRING]]
+		once
+			create l_list.make (2)
+			l_list.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
+			l_list.force (create {HASH_TABLE [INTEGER, STRING]}.make (4))
+			l_list [1].force (400, "Zurich")
+			l_list [1].force (198, "Geneva")
+			l_list [1].force (176, "Basel")
+			l_list [1].force (146, "Lausanne")
+			l_list [2].force (1894, "Balzer")
+			l_list [2].force (1893, "Duryea Car")
+			l_list [2].force (1889, "Daimler-Maybach Stahlradwagen")
+			l_list [2].force (1884, "La Marquise")
+			Result := l_list.to_array
+		end
+
+	test_2_string: STRING = "[
+1:#Zurich:400,#Geneva:198,#Basel:176,#Lausanne:146
+2:#Balzer:1894,#Duryea Car:1893,#Daimler-Maybach Stahlradwagen:1889,#La Marquise:1884
+]"
+		-- `test_2_string' as "expected" value in `assert_strings_equal' calls.
 
 end
 

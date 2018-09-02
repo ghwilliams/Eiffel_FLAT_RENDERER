@@ -17,56 +17,56 @@ feature
 			my_str := ""
 		end
 
-	render (a_data: ANY; a_sense: BOOLEAN; a_key: HASHABLE)
+	render (a_data: detachable ANY; a_sense: BOOLEAN; a_key: HASHABLE; is_last: BOOLEAN)
 		local
+			l_end_mark: CHARACTER
 		do
-			if a_sense = True then
-				if attached {INTEGER} a_key then
-				elseif attached {HASHABLE} a_data then
-					my_str.append_character ('#')
-				end
-				my_str.append_string_general (a_key.out)
-				my_str.append_character (':')
-				if attached {STRING} a_data as al_string then
-					my_str.append_string_general (al_string)
-					my_str.append_character (',')
-				elseif attached {CHARACTER} a_data as al_character then
-					my_str.append_string_general (al_character.out)
-					my_str.append_character (',')
-				elseif attached {DECIMAL} a_data as al_decimal then
-					my_str.append_string_general (al_decimal.out)
-					my_str.append_character (',')
-				elseif attached {NUMERIC} a_data as al_numeric then
-					my_str.append_string_general (al_numeric.out)
-					my_str.append_character (',')
-				elseif attached {ABSOLUTE} a_data as al_time then
-					my_str.append_string_general (al_time.out)
-					my_str.append_character (',')
-				elseif attached {ITERABLE [ANY]} a_data as al_hash then
-				else
-					my_str.append_string_general ("n/a")
-					my_str.append_character (',')
-				end
+			if a_data = Void then
+				my_str := "Void"
 			else
-				if attached {STRING} a_data as al_string then
-				elseif attached {CHARACTER} a_data as al_character then
-				elseif attached {DECIMAL} a_data as al_decimal then
-				elseif attached {NUMERIC} a_data as al_numeric then
-				elseif attached {ABSOLUTE} a_data as al_time then
-				elseif attached {ITERABLE [ANY]} a_data as al_hash then
-						-- If we are leaving one hierachy level
-					check
-						last_is_comma_or_newline: (<<',', '%N'>>).has (last_character (my_str))
+				if a_sense = True then
+					if attached {INTEGER} a_key as al_key then
+						if al_key /= 0 then
+							my_str.append_string_general (a_key.out)
+							my_str.append_character (':')
+						end
+					elseif attached {HASHABLE} a_data then
+						my_str.append_character ('#')
+						my_str.append_string_general (a_key.out)
+						my_str.append_character (':')
 					end
-					if last_character (my_str) = ',' then
-						my_str.remove_tail (1)
-						my_str.append_character ('%N')
+					if is_last then
+						l_end_mark := '%N'
+					else
+						l_end_mark := ','
 					end
-				else
-					my_str.append_string_general ("n/a")
-					my_str.append_character (',')
+					if attached {STRING} a_data as al_string then
+						my_str.append_string_general (al_string)
+						my_str.append_character (l_end_mark)
+					elseif attached {CHARACTER} a_data as al_character then
+						my_str.append_string_general (al_character.out)
+						my_str.append_character (l_end_mark)
+					elseif attached {DECIMAL} a_data as al_decimal then
+						my_str.append_string_general (al_decimal.out)
+						my_str.append_character (l_end_mark)
+					elseif attached {NUMERIC} a_data as al_numeric then
+						my_str.append_string_general (al_numeric.out)
+						my_str.append_character (l_end_mark)
+					elseif attached {ABSOLUTE} a_data as al_time then
+						my_str.append_string_general (al_time.out)
+						my_str.append_character (l_end_mark)
+					elseif attached {ITERABLE [ANY]} a_data as al_hash then
+					else
+						my_str.append_string_general ("n/a")
+						my_str.append_character (l_end_mark)
+					end
 				end
 			end
+		end
+
+	reset
+		do
+			my_str := ""
 		end
 
 feature

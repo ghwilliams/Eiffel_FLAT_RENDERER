@@ -36,6 +36,29 @@ feature
 
 feature {ANY} -- exported dump procedures
 
+	visit (a_data_structure: detachable ANY; a_action: PROCEDURE [TUPLE [detachable ANY, BOOLEAN, HASHABLE, BOOLEAN]])
+			-- visit recursively the contents of `a_data_structure' .
+		note
+			arguments: "[
+						a_data_structure  Data sctructure to be dumped
+						]"
+			purpose: "[
+						This routine is an iterface to the internal routine render_01.
+			         ]"
+		local
+			l_zero: HASHABLE
+			l_void: detachable ANY
+		do
+			l_zero := 0
+			if attached {ITERABLE [ANY]} a_data_structure as al_iterable then
+				visit_internal (al_iterable, a_action)
+			elseif attached a_data_structure as al_data_structure then
+				a_action (al_data_structure, True, l_zero, True)
+			else
+				l_void := Void
+				a_action (l_void, True, l_zero, True)
+			end
+		end
 
 --	dump_range (a_data_structure: ITERABLE [ANY]; a_range: INTEGER_INTERVAL): STRING
 --			-- `dump_range' of `a_data_structure' over `a_range' of top items.
@@ -92,7 +115,7 @@ feature {ANY} -- exported dump procedures
 
 feature -- Implementation
 
-	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [ANY, BOOLEAN, HASHABLE]])
+	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [detachable ANY, BOOLEAN, HASHABLE, BOOLEAN]])
 			-- `dump_internal' version of `dump' contents of `a_child', appending to `a_parent_result'
 		note
 			see_also: "[
@@ -103,7 +126,10 @@ feature -- Implementation
 			l_keys: detachable ARRAY [detachable HASHABLE]
 			l_key: HASHABLE
 			i: INTEGER
+			l_is_last: BOOLEAN
+			l_ic: ITERATION_CURSOR [ANY]
 		do
+			l_is_last := False
 			across
 				a_child as ic
 			from
@@ -119,12 +145,19 @@ feature -- Implementation
 				else
 					l_key := i
 				end
-				a_action(ic.item, True, l_key)
+
+				l_ic := ic.twin
+				l_ic.forth
+				if l_ic.after then
+					l_is_last := True
+				end
+
+				a_action(ic.item, True, l_key, l_is_last)
 				if attached {STRING} ic.item as al_str then
 				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
 					visit_internal (al_iterable, a_action)
 				end
-				a_action(ic.item, False, l_key)
+				a_action(ic.item, False, l_key, l_is_last)
 				i := i + 1
 			end
 		end
@@ -137,25 +170,5 @@ feature -- Implementation
 			Result := a_string [a_string.count]
 		end
 
-feature -- Agents
-
---	set_agent (on_stop: PROCEDURE [TUPLE [ANY, BOOLEAN]])
---		do
---			my_agents := on_stop
---		end
-
-	call_agent (a_element: ANY; a_sens: BOOLEAN)
-			--
-		local
-			l_op: TUPLE [ANY]
-		do
-			if attached {PROCEDURE [TUPLE [ANY, BOOLEAN]]} my_agent as al_p then
-				al_p.call (a_element, a_sens)
-			end
-		end
-
-feature {NONE}
-
-	my_agent: detachable PROCEDURE [TUPLE [ANY, BOOLEAN]]
 
 end
