@@ -14,7 +14,7 @@ feature
 		local
 			l_end_mark: CHARACTER
 		do
-			if a_sense = first_pass then
+			if a_sense = is_first_pass then
 				if attached {INTEGER} a_key then
 				elseif attached {HASHABLE} a_data then
 					rendered_result.append_character (hash_mark)
@@ -58,7 +58,7 @@ feature
 					rendered_result.append_character (l_end_mark)
 				end
 			else
-				do_nothing -- `a_sense' /= `first_pass'
+				do_nothing -- `a_sense' /= `is_first_pass'
 				-- TODO: Do we actually need to do something on second or last pass?
 				--			It appears we simply ignore subsequent passes. Is this true?
 			end
