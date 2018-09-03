@@ -41,7 +41,7 @@ feature -- Output
 				a_sense:	True - It is the first pass trough a_data
 				         	False - It is the second (and last) pass through a_data
 				a_key:		Key value associated with a_data
-				is_last:	True - a_data is the last child in its branch. False otherwise.
+				a_is_last:	True - a_data is the last child in its branch. False otherwise.
 			]"
 			see_also: "[
 				See the {FLAT_RENDERER_TEST_SET} in the test target for more information

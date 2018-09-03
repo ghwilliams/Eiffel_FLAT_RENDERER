@@ -37,11 +37,11 @@ feature -- String Constants
 feature -- Rendering Agent Call Constants
 		-- For example: See {FLAT_RENDERER_CSV}.render
 
-	is_first_pass: BOOLEAN
-			-- This is `is_first_pass' through data structure items.
+	is_the_first_pass: BOOLEAN
+			-- This is `is_the_first_pass' through data structure items.
 		note
 			description: "[
-				This is an answer to the question: Is this the `is_first_pass' through a
+				This is an answer to the question: Is this the `is_the_first_pass' through a
 				data structure of items? So, it is not presented as the question itself,
 				but as the answer to the question and coded as a constant (once in this case).
 				]"
@@ -49,10 +49,10 @@ feature -- Rendering Agent Call Constants
 			Result := True
 		end
 
-	is_second_or_last_pass: BOOLEAN = False
-			-- This is the `is_second_or_last_pass' through data structure items.
+	is_the_second_or_last_pass: BOOLEAN = False
+			-- This `is_the_second_or_last_pass' through data structure items.
 
-	is_last_item: BOOLEAN = True
-			-- This agent call `is_last_item' in data structure items.
+	is_the_last_item: BOOLEAN = True
+			-- This agent call `is_the_last_item' in data structure items.
 
 end

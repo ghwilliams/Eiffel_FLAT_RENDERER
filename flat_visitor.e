@@ -63,11 +63,11 @@ feature {ANY} -- exported visit procedures
 					attached {ABSOLUTE} a_data_structure or
 					attached {BOOLEAN} a_data_structure
 			then
-				a_action (a_data_structure, const.is_first_pass, l_key, const.is_last_item)
+				a_action (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
 			elseif attached {ITERABLE [ANY]} a_data_structure as al_iterable then
 				visit_internal (al_iterable, a_action)
 			else
-				a_action (a_data_structure, const.is_first_pass, l_key, const.is_last_item)
+				a_action (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
 			end
 		end
 
@@ -161,12 +161,12 @@ feature -- Implementation
 				if l_ic.after then
 					l_is_last := True
 				end
-				a_action (ic.item, True, l_key, l_is_last)
+				a_action (ic.item, const.is_the_first_pass, l_key, l_is_last)
 				if attached {STRING} ic.item as al_str then
 				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
 					visit_internal (al_iterable, a_action)
 				end
-				a_action (ic.item, False, l_key, l_is_last)
+				a_action (ic.item, const.is_the_second_or_last_pass, l_key, l_is_last)
 				i := i + 1
 			end
 		end
