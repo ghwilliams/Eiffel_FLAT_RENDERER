@@ -41,6 +41,7 @@
 		<setting name="console_application" value="false"/>
 		<capability>
 			<concurrency support="none"/>
+			<void_safety support="transitional"/>
 		</capability>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
 		<cluster name="tests" location=".\tests\" recursive="true"/>

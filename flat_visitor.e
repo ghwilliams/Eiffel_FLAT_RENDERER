@@ -1,68 +1,75 @@
 note
 	description: "[
 		Visit the elements of a given (possibly multidimensional) data structure and
-		calls the supplied renderer agent for every element in it.
+		call the supplied renderer agent for every element in it.
 	]"
 	purpose: "[
-		This is an attempt to solve the problem on how to debug
-		a given data structure. This problem was posed by 
-		Bertrand Meyer on the Eiffel users forum:
-			see thread Renders, a small community project by Bertrand Meyer.
+		Present formatted text output of an arbitrary given data structure.
+		This problem was posed by Bertrand Meyer on the Eiffel users forum:
+		 see thread Renders, a small community project by Bertrand Meyer.
 	]"
 	EIS: "name=eiffel_users_forum", "src=https://groups.google.com/forum/#!topic/eiffel-users/N9fLnpNvrOw"
 	how: "[
-		This class supplies a procedure for visiting all the elements in
+		This class supplies a routine to `visit' all elements in
 		a given data sctructure conforming to very specific abstract base classes.
-		The following abstract classes are currently supported:
+		
+		The following abstract classes (and descendants) are currently supported:
 		  * ITERABLE [G]
-		The visit algorithm traverses the data structures recursively until a
+		
+		The `visit' algorithm traverses the data structures recursively until a
 		basic type is found, and then a user supplied agent is called
-		with the respective element being passed as an argument.
+		with the respective element for rendering.
 	]"
 	basic_data_types: "[
 		The following basic types are currently implemented:
 		  * STRING, INTEGER, REAL, DOUBLE, DECIMAL, DATE_TIME, DATE, BOOLEAN, and TIME
 	]"
-	date: "$Date$"
-	revision: "$Revision$"
 
 class
 	FLAT_VISITOR
 
-create
-	make
+inherit
+	FLAT_CONSTANTS
 
-feature
-
-	make
-		do
-		end
+	FLAT_COMMON
 
 feature {ANY} -- exported visit procedures
 
-	visit (a_data_structure: detachable ANY; a_action: PROCEDURE [TUPLE [detachable ANY, BOOLEAN, HASHABLE, BOOLEAN]])
-			-- visit recursively the contents of `a_data_structure' .
+	visit (a_data_structure: detachable ANY; a_action: PROCEDURE [TUPLE [data_structure: detachable ANY; sense: BOOLEAN; key: HASHABLE; last_item: BOOLEAN]])
+			-- Recursively `visit' the contents of `a_data_structure' applying `a_action' to each.
 		note
 			arguments: "[
-				a_data_structure  Data sctructure to be visited
-				a_action          The agent responsible for doing an action for
-				                  every element of a_data_structure
+				a_data_structure:	Data sctructure to be visited
+				a_action:			The agent responsible for doing an action for
+				                  	 every element of a_data_structure
 			]"
 			purpose: "[
-				To traverse a_data_structure recursively.
-				It calls a_action for it one of its children if it is one of the
-				basic data types.
+				To get a formatted text output of the elements of `a_data_structure' in
+				some form such as CSV, JSON, HTML <table>, YAML, and others.
+				]"
+			how: "[
+				Recursively traverse `a_data_structure', calling `a_action' for each
+				of its children if it is one of the basic data types. The `a_action'
+				agent will determine the format of the output. This routine is only 
+				responsible for walking `a_data_structure'.
 			]"
 		local
-			l_zero: HASHABLE
+			l_key: HASHABLE
 		do
-			l_zero := 0
-			if attached {STRING} a_data_structure or attached {CHARACTER} a_data_structure or attached {DECIMAL} a_data_structure or attached {NUMERIC} a_data_structure or attached {ABSOLUTE} a_data_structure or attached {BOOLEAN} a_data_structure then
-				a_action (a_data_structure, True, l_zero, True)
+			l_key := 0
+			if
+				attached {STRING} a_data_structure or
+					attached {CHARACTER} a_data_structure or
+					attached {DECIMAL} a_data_structure or
+					attached {NUMERIC} a_data_structure or
+					attached {ABSOLUTE} a_data_structure or
+					attached {BOOLEAN} a_data_structure
+			then
+				a_action (a_data_structure, first_pass, l_key, is_last_item)
 			elseif attached {ITERABLE [ANY]} a_data_structure as al_iterable then
 				visit_internal (al_iterable, a_action)
 			else
-				a_action (a_data_structure, True, l_zero, True)
+				a_action (a_data_structure, first_pass, l_key, is_last_item)
 			end
 		end
 
@@ -121,8 +128,8 @@ feature {ANY} -- exported visit procedures
 
 feature -- Implementation
 
-	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [detachable ANY, BOOLEAN, HASHABLE, BOOLEAN]])
-			-- Visits recursively a_child and calls a_action for each one of its children
+	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [data: detachable ANY; sense: BOOLEAN; key: HASHABLE; is_last: BOOLEAN]])
+			-- Visits recursively `a_child' and calls `a_action' for each one of its children
 		note
 			see_also: "[
 				See the {FLAT_RENDERER_TEST_SET} in the test target for more information
@@ -164,14 +171,6 @@ feature -- Implementation
 				a_action (ic.item, False, l_key, l_is_last)
 				i := i + 1
 			end
-		end
-
-	last_character (a_string: STRING): CHARACTER
-			-- what is the `last_character' in non-empty `a_string'?
-		require
-			not_empty: not a_string.is_empty
-		do
-			Result := a_string [a_string.count]
 		end
 
 end
