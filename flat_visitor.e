@@ -35,7 +35,7 @@ inherit
 
 feature {ANY} -- exported visit procedures
 
-	visit (a_data_structure: detachable ANY; a_action: PROCEDURE [TUPLE [data_structure: detachable ANY; sense: BOOLEAN; key: HASHABLE; last_item: BOOLEAN]])
+	visit (a_data_structure: detachable ANY; a_action: PROCEDURE [TUPLE [data_structure: detachable ANY; sense: BOOLEAN; key: HASHABLE; is_last_item: BOOLEAN]])
 			-- Recursively `visit' the contents of `a_data_structure' applying `a_action' to each.
 		note
 			arguments: "[
@@ -128,7 +128,7 @@ feature {ANY} -- exported visit procedures
 
 feature -- Implementation
 
-	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [data: detachable ANY; sense: BOOLEAN; key: HASHABLE; is_last: BOOLEAN]])
+	visit_internal (a_child: ITERABLE [ANY]; a_action: PROCEDURE [TUPLE [data_structure: detachable ANY; sense: BOOLEAN; key: HASHABLE; is_last_item: BOOLEAN]])
 			-- Visits recursively `a_child' and calls `a_action' for each one of its children
 		note
 			see_also: "[
