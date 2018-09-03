@@ -95,7 +95,7 @@ feature
 				-- In Line 4 we process children elements if any
 				-- And, in Line 6 a_sense = is_the_second_or_last_pass meaning
 				-- that we are about to leave this element during the data traversal. So,
-				-- we have a second oportunity to do something interesting for this element.
+				-- we have a second opportunity to do something interesting for this element.
 				-- Maybe is_the_first_pass and is_the_second_or_last_pass could be renamed
 				-- to is_entering and is_exiting respectively.
 			end
