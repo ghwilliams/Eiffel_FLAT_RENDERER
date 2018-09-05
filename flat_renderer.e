@@ -4,8 +4,8 @@ note
 deferred class
 	FLAT_RENDERER
 
-
 inherit
+
 	ANY
 		redefine
 			default_create
@@ -29,7 +29,12 @@ feature {NONE} -- Initialization
 		do
 			Precursor
 			reset
+
 		end
+
+feature -- User options
+
+	
 
 feature -- Output
 
@@ -62,5 +67,7 @@ feature -- Access
 
 	rendered_result: STRING
 			-- The `rendered_result' of a data structure given to `render'.
+
+
 
 end
