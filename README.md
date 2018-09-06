@@ -26,6 +26,7 @@ this element is one of INTEGER, STRING, REAL or DOUBLE data types and
 proceeds recursively otherwise.
 
 ## Output formats
+Currently only Comma Separated Values (CSV) format is implemented.
 
 ## Examples
 
