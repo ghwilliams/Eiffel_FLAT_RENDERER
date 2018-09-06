@@ -75,13 +75,12 @@ feature {ANY} -- exported visit procedures
 			end
 		end
 
-	visit_range(a_data_structure: detachable ANY;
-	       a_action: PROCEDURE [TUPLE [
-	                            data_structure: detachable ANY;
-	                            sense: BOOLEAN;
-	                            key: HASHABLE;
-	                            is_last_item: BOOLEAN]];
-	       a_range: INTEGER_INTERVAL)
+	visit_range (a_data_structure: detachable ANY;
+					a_action: PROCEDURE [TUPLE [data_structure: detachable ANY;
+										sense: BOOLEAN;
+										key: HASHABLE;
+										is_last_item: BOOLEAN]];
+					a_range: INTEGER_INTERVAL)
 	    note
 	    	design: "[
 				From time-to-time, we may have big data in `a_data_structure' and we do not
