@@ -206,6 +206,7 @@ feature -- Action listeners exported
 													sense: BOOLEAN;
 													key: HASHABLE;
 													is_last_item: BOOLEAN]])
+			-- Add another action to the list of action listeners
 		do
 			action_listeners.extend (a_action)
 		end
