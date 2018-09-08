@@ -32,13 +32,19 @@ inherit
 
 	FLAT_COMMON
 
+create
+	make
+
+feature -- Construction
+
+	make
+		do
+			create action_listeners.make
+		end
+
 feature {ANY} -- exported visit procedures
 
-	visit (a_data_structure: detachable ANY;
-				a_action: PROCEDURE [TUPLE [data_structure: detachable ANY;
-									sense: BOOLEAN;
-									key: HASHABLE;
-									is_last_item: BOOLEAN]])
+	visit (a_data_structure: detachable ANY)
 			-- Recursively `visit' the contents of `a_data_structure' applying `a_action' to each.
 		note
 			arguments: "[
@@ -66,20 +72,19 @@ feature {ANY} -- exported visit procedures
 				or attached {NUMERIC} a_data_structure
 				or attached {ABSOLUTE} a_data_structure
 				or attached {BOOLEAN} a_data_structure then
-				a_action (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				across action_listeners as ic_action loop
+					ic_action.item (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				end
 			elseif attached {ITERABLE [ANY]} a_data_structure as al_iterable then
-				visit_internal (al_iterable, a_action)
+				visit_internal (al_iterable)
 			else
-				a_action (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				across action_listeners as ic_action loop
+					ic_action.item (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				end
 			end
 		end
 
-	visit_range (a_data_structure: detachable ANY;
-					a_action: PROCEDURE [TUPLE [data_structure: detachable ANY;
-										sense: BOOLEAN;
-										key: HASHABLE;
-										is_last_item: BOOLEAN]];
-					a_range: INTEGER_INTERVAL)
+	visit_range (a_data_structure: detachable ANY; a_range: INTEGER_INTERVAL)
 	    note
 	    	design: "[
 				From time-to-time, we may have big data in `a_data_structure' and we do not
@@ -104,7 +109,9 @@ feature {ANY} -- exported visit procedures
 		do
 			l_key := 0
 			if attached {STRING} a_data_structure or attached {CHARACTER} a_data_structure or attached {DECIMAL} a_data_structure or attached {NUMERIC} a_data_structure or attached {ABSOLUTE} a_data_structure or attached {BOOLEAN} a_data_structure then
-				a_action (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				across action_listeners as ic_action loop
+					ic_action.item (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				end
 			elseif attached {ITERABLE [ANY]} a_data_structure as al_iterable then
 				across
 					al_iterable as ic
@@ -119,24 +126,24 @@ feature {ANY} -- exported visit procedures
 						else
 							l_key := i
 						end
-						a_action (al_item_iterable, const.is_the_first_pass, l_key, not const.is_the_last_item)
-						visit_internal (al_item_iterable, a_action)
+						across action_listeners as ic_action loop
+							ic_action.item (al_item_iterable, const.is_the_first_pass, l_key, not const.is_the_last_item)
+						end
+						visit_internal (al_item_iterable)
 					end
 					i := i + 1
 				end
 			else
-				a_action (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				across action_listeners as ic_action loop
+					ic_action.item (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
+				end
 			end
 
 		end
 
 feature -- Implementation
 
-	visit_internal (a_child: ITERABLE [ANY];
-						a_action: PROCEDURE [TUPLE [data_structure: detachable ANY;
-											sense: BOOLEAN;
-											key: HASHABLE;
-											is_last_item: BOOLEAN]])
+	visit_internal (a_child: ITERABLE [ANY])
 			-- Visits recursively `a_child' and calls `a_action' for each one of its children
 		note
 			see_also: "[
@@ -171,12 +178,16 @@ feature -- Implementation
 				if l_ic.after then
 					l_is_last := True
 				end
-				a_action (ic.item, const.is_the_first_pass, l_key, l_is_last)
+				across action_listeners as ic_action loop
+					ic_action.item (ic.item, const.is_the_first_pass, l_key, l_is_last)
+				end
 				if attached {STRING} ic.item as al_str then
 				elseif attached {ITERABLE [ANY]} ic.item as al_iterable then
-					visit_internal (al_iterable, a_action)
+					visit_internal (al_iterable)
 				end
-				a_action (ic.item, const.is_the_second_or_last_pass, l_key, l_is_last)
+				across action_listeners as ic_action loop
+					ic_action.item (ic.item, const.is_the_second_or_last_pass, l_key, l_is_last)
+				end
 				i := i + 1
 			end
 		end
@@ -188,5 +199,22 @@ feature {NONE} -- Implementation: Constants
 		once
 			create Result
 		end
+
+feature -- Action listeners exported
+
+	add_action_listener (a_action: PROCEDURE [TUPLE [data_structure: detachable ANY;
+													sense: BOOLEAN;
+													key: HASHABLE;
+													is_last_item: BOOLEAN]])
+		do
+			action_listeners.extend (a_action)
+		end
+
+feature {FLAT_VISITOR} -- Action listeners internals
+
+	action_listeners: LINKED_LIST [PROCEDURE [TUPLE [data_structure: detachable ANY;
+													sense: BOOLEAN;
+													key: HASHABLE;
+													is_last_item: BOOLEAN]]]
 
 end
