@@ -308,7 +308,7 @@ feature -- Tests: Test 1
 			create l_rend
 
 			l_visitor.add_action_listener (agent l_rend.render)
-			l_visitor.visit_internal(test_1_table)
+			l_visitor.visit(test_1_table)
 			l_rend.rendered_result.adjust
 
 			assert_strings_equal ("test_1", test_1_string, l_rend.rendered_result)
@@ -347,10 +347,11 @@ feature -- Tests: Test 2
 			create l_visitor.make
 			create l_rend
 
---			l_visitor.visit_internal(test_2_table, agent l_rend.render)
---			l_rend.rendered_result.adjust
+			l_visitor.add_action_listener (agent l_rend.render)
+			l_visitor.visit(test_2_table)
+			l_rend.rendered_result.adjust
 
---			assert_strings_equal ("test_2", test_2_string, l_rend.rendered_result)
+			assert_strings_equal ("test_2", test_2_string, l_rend.rendered_result)
 		end
 
 feature {NONE} -- Support: Test 2
@@ -379,6 +380,45 @@ feature {NONE} -- Support: Test 2
 2:#Balzer:1894,#Duryea Car:1893,#Daimler-Maybach Stahlradwagen:1889,#La Marquise:1884
 ]"
 		-- `test_2_string' as "expected" value in `assert_strings_equal' calls.
+
+feature -- Test multiple action listeners in VISIT
+	test_multiple_actions_01
+			-- Main test routine for multiple agents in the VISIT class
+		local
+			l_visitor: FLAT_VISITOR
+			l_rend: FLAT_RENDERER_CSV
+			l_expected: INTEGER
+		do
+			create l_visitor.make
+			create l_rend
+
+			l_expected := 5   -- Number of STRINGs in data_1_table
+
+			l_visitor.add_action_listener (agent l_rend.render) -- Add listener for rendering
+			l_visitor.add_action_listener (agent count_strings) -- Add listener for counting
+
+			l_visitor.visit(data_1_table) -- Run visit only once
+
+			l_rend.rendered_result.adjust
+
+			assert_strings_equal ("data_1", data_1_string, l_rend.rendered_result)
+			assert_integers_equal ("test_count_strings", l_expected, number_of_strings)
+		end
+
+	count_strings (a_data: detachable ANY; a_sense: BOOLEAN; a_key: HASHABLE; a_is_last_item: BOOLEAN)
+			-- This procedure is intended to be used as an agent passed to VISITOR.add_action_listener. It will
+			-- count the number of STRING types in the test data data_1_table
+		do
+			if attached {STRING} a_data as al_string and a_sense = True then
+				number_of_strings := number_of_strings + 1
+			end
+
+		end
+
+feature -- Test STRING count data
+	number_of_strings: INTEGER
+					-- Gets the result of counting the number of strings according to
+					-- feature count_strings
 
 end
 
