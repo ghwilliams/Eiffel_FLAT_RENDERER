@@ -40,6 +40,7 @@ feature -- Construction
 	make
 		do
 			create action_listeners.make
+			create basic_types.make
 		end
 
 feature {ANY} -- exported visit procedures
@@ -64,14 +65,18 @@ feature {ANY} -- exported visit procedures
 			]"
 		local
 			l_key: HASHABLE
+			l_data_is_a_basic_type: BOOLEAN
 		do
 			l_key := 0
-			if attached {STRING} a_data_structure
-				or attached {CHARACTER} a_data_structure
-				or attached {DECIMAL} a_data_structure
-				or attached {NUMERIC} a_data_structure
-				or attached {ABSOLUTE} a_data_structure
-				or attached {BOOLEAN} a_data_structure then
+			l_data_is_a_basic_type := False
+			if attached a_data_structure then
+				across basic_types as ic_bt loop
+					if ic_bt.item.same_type (a_data_structure) then
+						l_data_is_a_basic_type := True
+					end
+				end
+			end
+			if l_data_is_a_basic_type then
 				across action_listeners as ic_action loop
 					ic_action.item (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
 				end
@@ -106,9 +111,18 @@ feature {ANY} -- exported visit procedures
 	    local
 			l_key: HASHABLE
 			i: INTEGER
+			l_data_is_a_basic_type: BOOLEAN
 		do
 			l_key := 0
-			if attached {STRING} a_data_structure or attached {CHARACTER} a_data_structure or attached {DECIMAL} a_data_structure or attached {NUMERIC} a_data_structure or attached {ABSOLUTE} a_data_structure or attached {BOOLEAN} a_data_structure then
+			l_data_is_a_basic_type := False
+			if attached a_data_structure then
+				across basic_types as ic_bt loop
+					if ic_bt.item.same_type (a_data_structure) then
+						l_data_is_a_basic_type := True
+					end
+				end
+			end
+			if l_data_is_a_basic_type then
 				across action_listeners as ic_action loop
 					ic_action.item (a_data_structure, const.is_the_first_pass, l_key, const.is_the_last_item)
 				end
@@ -218,4 +232,13 @@ feature {FLAT_VISITOR} -- Action listeners internals
 													key: HASHABLE;
 													is_last_item: BOOLEAN]]]
 
+feature -- Basic types
+
+	add_basic_type_model (a_model: ANY)
+			-- Add a new type model
+		do
+			basic_types.extend (a_model)
+		end
+
+	basic_types: LINKED_LIST [ANY]
 end

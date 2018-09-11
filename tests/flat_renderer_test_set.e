@@ -49,10 +49,41 @@ feature -- Test: Breaking Attempts
 		local
 			l_visitor: FLAT_VISITOR
 			l_renderer: FLAT_RENDERER_CSV
+
+				-- models for basic types
+			basic_string: STRING
+			basic_integer: INTEGER
+			basic_date: DATE
+			basic_time: TIME
+			basic_real: REAL
+			basic_decimal: DECIMAL
+			basic_character: CHARACTER
+			basic_boolean: BOOLEAN
 		do
 			create l_visitor.make
 			create l_renderer
 
+				-- Creation of models of basic data types
+			create basic_string.make_empty
+			create basic_integer.default_create
+			create basic_date.make_now
+			create basic_time.make_now
+			create basic_real.default_create
+			create basic_decimal.default_create
+			create basic_character.default_create
+			create basic_boolean.default_create
+
+				-- Add basic types models to visitor
+			l_visitor.add_basic_type_model (basic_string)
+			l_visitor.add_basic_type_model (basic_integer)
+			l_visitor.add_basic_type_model (basic_date)
+			l_visitor.add_basic_type_model (basic_time)
+			l_visitor.add_basic_type_model (basic_real)
+			l_visitor.add_basic_type_model (basic_decimal)
+			l_visitor.add_basic_type_model (basic_character)
+			l_visitor.add_basic_type_model (basic_boolean)
+
+				-- Add action listener
 			l_visitor.add_action_listener (agent l_renderer.render)
 
 			l_renderer.reset
@@ -145,6 +176,16 @@ feature -- Tests: Big Data
 			l_renderer: FLAT_RENDERER_CSV
 			l_rendered_result: STRING
 			l_range: INTEGER_INTERVAL
+
+				-- models for basic types
+			basic_string: STRING
+			basic_integer: INTEGER
+			basic_date: DATE
+			basic_time: TIME
+			basic_real: REAL
+			basic_decimal: DECIMAL
+			basic_character: CHARACTER
+			basic_boolean: BOOLEAN
 		do
 			create l_visitor.make
 			create l_renderer
@@ -165,6 +206,27 @@ feature -- Tests: Big Data
 			l_rendered_result.append_character (']')
 			l_rendered_result.append_character ('%N')
 
+				-- Creation of models of basic data types
+			create basic_string.make_empty
+			create basic_integer.default_create
+			create basic_date.make_now
+			create basic_time.make_now
+			create basic_real.default_create
+			create basic_decimal.default_create
+			create basic_character.default_create
+			create basic_boolean.default_create
+
+				-- Add basic types models to visitor
+			l_visitor.add_basic_type_model (basic_string)
+			l_visitor.add_basic_type_model (basic_integer)
+			l_visitor.add_basic_type_model (basic_date)
+			l_visitor.add_basic_type_model (basic_time)
+			l_visitor.add_basic_type_model (basic_real)
+			l_visitor.add_basic_type_model (basic_decimal)
+			l_visitor.add_basic_type_model (basic_character)
+			l_visitor.add_basic_type_model (basic_boolean)
+
+				-- Add action listener
 			l_visitor.add_action_listener (agent l_renderer.render)
 			l_visitor.visit_range(big_data_1, l_range)
 
@@ -267,10 +329,40 @@ feature -- Tests: Ad hoc
 		local
 			l_visitor: FLAT_VISITOR
 			l_rend: FLAT_RENDERER_CSV
+				-- models for basic types
+			basic_string: STRING
+			basic_integer: INTEGER
+			basic_date: DATE
+			basic_time: TIME
+			basic_real: REAL
+			basic_decimal: DECIMAL
+			basic_character: CHARACTER
+			basic_boolean: BOOLEAN
 		do
 			create l_visitor.make
 			create l_rend
 
+				-- Creation of models of basic data types
+			create basic_string.make_empty
+			create basic_integer.default_create
+			create basic_date.make_now
+			create basic_time.make_now
+			create basic_real.default_create
+			create basic_decimal.default_create
+			create basic_character.default_create
+			create basic_boolean.default_create
+
+				-- Add basic types models to visitor
+			l_visitor.add_basic_type_model (basic_string)
+			l_visitor.add_basic_type_model (basic_integer)
+			l_visitor.add_basic_type_model (basic_date)
+			l_visitor.add_basic_type_model (basic_time)
+			l_visitor.add_basic_type_model (basic_real)
+			l_visitor.add_basic_type_model (basic_decimal)
+			l_visitor.add_basic_type_model (basic_character)
+			l_visitor.add_basic_type_model (basic_boolean)
+
+				-- Add action listener
 			l_visitor.add_action_listener (agent l_rend.render)
 			l_visitor.visit_internal(data_1_table)
 			l_rend.rendered_result.adjust
@@ -303,10 +395,40 @@ feature -- Tests: Test 1
 		local
 			l_visitor: FLAT_VISITOR
 			l_rend: FLAT_RENDERER_CSV
+				-- models for basic types
+			basic_string: STRING
+			basic_integer: INTEGER
+			basic_date: DATE
+			basic_time: TIME
+			basic_real: REAL
+			basic_decimal: DECIMAL
+			basic_character: CHARACTER
+			basic_boolean: BOOLEAN
 		do
 			create l_visitor.make
 			create l_rend
 
+				-- Creation of models of basic data types
+			create basic_string.make_empty
+			create basic_integer.default_create
+			create basic_date.make_now
+			create basic_time.make_now
+			create basic_real.default_create
+			create basic_decimal.default_create
+			create basic_character.default_create
+			create basic_boolean.default_create
+
+				-- Add basic types models to visitor
+			l_visitor.add_basic_type_model (basic_string)
+			l_visitor.add_basic_type_model (basic_integer)
+			l_visitor.add_basic_type_model (basic_date)
+			l_visitor.add_basic_type_model (basic_time)
+			l_visitor.add_basic_type_model (basic_real)
+			l_visitor.add_basic_type_model (basic_decimal)
+			l_visitor.add_basic_type_model (basic_character)
+			l_visitor.add_basic_type_model (basic_boolean)
+
+				-- Add action listener
 			l_visitor.add_action_listener (agent l_rend.render)
 			l_visitor.visit(test_1_table)
 			l_rend.rendered_result.adjust
@@ -341,12 +463,42 @@ feature -- Tests: Test 2
 			-- First test using a 2-dimensional data structure using HASH_TABLE
 		local
 			l_visitor: FLAT_VISITOR
-			l_rend: FLAT_RENDERER_CSV					     -- Renderer
+			l_rend: FLAT_RENDERER_CSV		-- Renderer
+				-- models for basic types
+			basic_string: STRING
+			basic_integer: INTEGER
+			basic_date: DATE
+			basic_time: TIME
+			basic_real: REAL
+			basic_decimal: DECIMAL
+			basic_character: CHARACTER
+			basic_boolean: BOOLEAN
 		do
 			-- Render table
 			create l_visitor.make
 			create l_rend
 
+				-- Creation of models of basic data types
+			create basic_string.make_empty
+			create basic_integer.default_create
+			create basic_date.make_now
+			create basic_time.make_now
+			create basic_real.default_create
+			create basic_decimal.default_create
+			create basic_character.default_create
+			create basic_boolean.default_create
+
+				-- Add basic types models to visitor
+			l_visitor.add_basic_type_model (basic_string)
+			l_visitor.add_basic_type_model (basic_integer)
+			l_visitor.add_basic_type_model (basic_date)
+			l_visitor.add_basic_type_model (basic_time)
+			l_visitor.add_basic_type_model (basic_real)
+			l_visitor.add_basic_type_model (basic_decimal)
+			l_visitor.add_basic_type_model (basic_character)
+			l_visitor.add_basic_type_model (basic_boolean)
+
+				-- Add action listener
 			l_visitor.add_action_listener (agent l_rend.render)
 			l_visitor.visit(test_2_table)
 			l_rend.rendered_result.adjust
@@ -388,11 +540,39 @@ feature -- Test multiple action listeners in VISIT
 			l_visitor: FLAT_VISITOR
 			l_rend: FLAT_RENDERER_CSV
 			l_expected: INTEGER
+				-- models for basic types
+			basic_string: STRING
+			basic_integer: INTEGER
+			basic_date: DATE
+			basic_time: TIME
+			basic_real: REAL
+			basic_decimal: DECIMAL
+			basic_character: CHARACTER
+			basic_boolean: BOOLEAN
 		do
 			create l_visitor.make
 			create l_rend
+				-- Creation of models of basic data types
+			create basic_string.make_empty
+			create basic_integer.default_create
+			create basic_date.make_now
+			create basic_time.make_now
+			create basic_real.default_create
+			create basic_decimal.default_create
+			create basic_character.default_create
+			create basic_boolean.default_create
 
 			l_expected := 5   -- Number of STRINGs in data_1_table
+
+				-- Add basic types models to visitor
+			l_visitor.add_basic_type_model (basic_string)
+			l_visitor.add_basic_type_model (basic_integer)
+			l_visitor.add_basic_type_model (basic_date)
+			l_visitor.add_basic_type_model (basic_time)
+			l_visitor.add_basic_type_model (basic_real)
+			l_visitor.add_basic_type_model (basic_decimal)
+			l_visitor.add_basic_type_model (basic_character)
+			l_visitor.add_basic_type_model (basic_boolean)
 
 			l_visitor.add_action_listener (agent l_rend.render) -- Add listener for rendering
 			l_visitor.add_action_listener (agent count_strings) -- Add listener for counting
