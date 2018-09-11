@@ -600,6 +600,75 @@ feature -- Test STRING count data
 					-- Gets the result of counting the number of strings according to
 					-- feature count_strings
 
+feature -- Test multiple action listeners in VISIT
+	test_user_basic_type
+			-- Main test routine for multiple agents in the VISIT class
+		local
+			l_visitor: FLAT_VISITOR
+			l_rend: FLAT_RENDERER_CSV
+			l_expected: INTEGER
+				-- models for basic types
+			basic_string: STRING
+			basic_integer: INTEGER
+			basic_date: DATE
+			basic_time: TIME
+			basic_real: REAL
+			basic_decimal: DECIMAL
+			basic_character: CHARACTER
+			basic_boolean: BOOLEAN
+			basic_user: MY_CLASS_A
+		do
+			create l_visitor.make
+			create l_rend
+
+				-- Creation of models of basic data types
+			create basic_string.make_empty
+			create basic_integer.default_create
+			create basic_date.make_now
+			create basic_time.make_now
+			create basic_real.default_create
+			create basic_decimal.default_create
+			create basic_character.default_create
+			create basic_boolean.default_create
+
+			create basic_user.make_empty
+
+				-- Add basic types models to visitor
+			l_visitor.add_basic_type_model (basic_string)
+			l_visitor.add_basic_type_model (basic_integer)
+			l_visitor.add_basic_type_model (basic_date)
+			l_visitor.add_basic_type_model (basic_time)
+			l_visitor.add_basic_type_model (basic_real)
+			l_visitor.add_basic_type_model (basic_decimal)
+			l_visitor.add_basic_type_model (basic_character)
+			l_visitor.add_basic_type_model (basic_boolean)
+
+			l_visitor.add_basic_type_model (basic_user)
+				-- Add a user basic type model
+
+			l_visitor.add_action_listener (agent l_rend.render) -- Add listener for rendering
+
+			l_visitor.visit(basic_type_data_1)
+
+			l_rend.rendered_result.adjust
+
+			assert_strings_equal ("data_1", basic_type_data_1_string, l_rend.rendered_result)
+		end
+
+	basic_type_data_1: ARRAYED_LIST [ARRAY [ANY]]
+			-- `data_1_table' data structure for testing.
+		once
+			create Result.make (3)
+			Result.force (<<create {DATE}.make (2018, 1, 2), create {DECIMAL}.make_from_string ("25.01"), "Larry", "Curly", "Moe", "Shemp", 1001, 100.99099>>)
+			Result.force (<<create {MY_CLASS_A}.make (10), 1, create {MY_CLASS_A}.make (4), 3>>)
+			Result.force (<<10, 20, create {TIME}.make (10, 20, 59)>>)
+		end
+
+	basic_type_data_1_string: STRING = "[
+1:1:01/02/2018,2:25.01,3:Larry,4:Curly,5:Moe,6:Shemp,7:1001,8:100.99099
+2:1:MY_CLASS_A: 10,2:1,3:MY_CLASS_A: 4,4:3
+3:1:10,2:20,3:10:20:59.000 AM
+]"
 end
 
 
